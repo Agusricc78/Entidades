@@ -13,6 +13,13 @@ namespace WebFormLayer.Controllers
             return View();
         }
 
+        public ActionResult HomTest() 
+        {
+            return View();
+        }
+
+
+
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

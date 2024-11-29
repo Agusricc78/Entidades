@@ -11,16 +11,16 @@ namespace DataAccessLayer
 {
     public class DataAccess
     {
-        private readonly AccessCore _objAccessCore;
+        private readonly AccesCore _objAccessCore;
 
         public DataAccess()
         {
-            _objAccessCore = new AccessCore("Adfos");
+            _objAccessCore = new AccesCore("CostaAzul");
         }
 
         public DataAccess(string connName)
         {
-            _objAccessCore = new AccessCore(connName);
+            _objAccessCore = new AccesCore(connName);
         }
 
         public List<T> GetList<T>(string sp, params object[] parameters) where T : class, new()
@@ -45,7 +45,6 @@ namespace DataAccessLayer
         {
             return _objAccessCore.GetSingleObject<T>(sp, parameters);
         }
-
 
         public bool Insert(string sp, params object[] parameters)
         {

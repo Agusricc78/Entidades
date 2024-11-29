@@ -6,12 +6,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace DataAccessLayer
 {
-    public class AccesCore
+    internal class AccesCore
     {
-        public AccessCore(string connName)
+        public AccesCore(string connName)
         {
             _connectionString = ConfigurationManager.ConnectionStrings[connName].ConnectionString;
         }
