@@ -1,5 +1,10 @@
 ﻿
-%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="YourNamespace.Login" %>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";  // Si no tienes un layout o lo configuras en el controlador
+}
+
+@model WebFormLayer.Models.LoginViewModel
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,20 +16,45 @@
 <body>
     <div class="login-container">
         <h2>Iniciar Sesión</h2>
-        <form id="loginForm" runat="server">
+
+        @* Mostrar mensaje de éxito o error desde TempData *@
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-info">
+                @TempData["Message"]
+            </div>
+           
+
+        }
+
+        @using (Html.BeginForm("ValidUser", "Login", FormMethod.Post))
+        {
             <div>
-                <label for="username">Usuario</label>
-                <input type="text" id="username" runat="server" placeholder="Ingrese su usuario" required />
+                <label for="Username">Usuario</label>
+                @Html.TextBoxFor(m => m.Username, new { placeholder = "Ingrese su usuario", required = "required" })
             </div>
             <div>
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" runat="server" placeholder="Ingrese su contraseña" required />
+                <label for="Password">Contraseña</label>
+                @Html.PasswordFor(m => m.Password, new { placeholder = "Ingrese su contraseña", required = "required" })
             </div>
             <div>
-                <button type="submit" runat="server" id="btnLogin">Ingresar</button>
+                <button type="submit">Ingresar</button>
             </div>
-        </form>
+        }
+       
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
+            }
     </div>
 </body>
 </html>
+
 

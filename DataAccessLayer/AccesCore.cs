@@ -14,13 +14,19 @@ namespace DataAccessLayer
     {
         public AccesCore(string connName)
         {
-            _connectionString = ConfigurationManager.ConnectionStrings[connName].ConnectionString;
+            // Busca la cadena de conexión en el archivo Web.config
+            var connStringSetting = ConfigurationManager.ConnectionStrings[connName];
+            if (connStringSetting == null)
+            {
+                throw new InvalidOperationException($"No se encontró la cadena de conexión '{connName}' en el archivo de configuración.");
+            }
+            _connectionString = connStringSetting.ConnectionString;
         }
 
 
         #region Propiedades
 
-        private readonly string _connectionString;
+        private readonly string _connectionString = "DataSource = PcAgus;database = CostaAzul;Integrates Security = true";
 
         #endregion
 

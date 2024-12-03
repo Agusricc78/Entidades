@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ServiceLayer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,21 @@ namespace WebFormLayer.Controllers
     {
         public ActionResult Index()
         {
+            var sesion = SessionManager.GetInstance;
+            if (sesion != null && sesion.SesionIniciada)
+            {
+              
+                ViewBag.IsLoggedIn = true;
+                ViewBag.UserName = sesion.Usuario.Nombre;
+            }
+            else
+            {
+               
+                ViewBag.IsLoggedIn = false;
+            }
+
+
+
             return View();
         }
 
@@ -21,10 +37,24 @@ namespace WebFormLayer.Controllers
 
         public ActionResult About()
         {
-            
-
             return View();
         }
+
+        public ActionResult Login()
+        {
+            var session = SessionManager.GetInstance;
+
+            if (session == null || !session.SesionIniciada)
+            {
+               
+                return View();  
+            }
+
+            
+            return RedirectToAction("Index", "Home");
+        }
+
+
 
         public ActionResult Contact()
         {

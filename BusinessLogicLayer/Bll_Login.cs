@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +12,9 @@ namespace BusinessLogicLayer
 {
     public class LoginService
     {
-        
+
+        Mp_User _user = new Mp_User();
+
         private readonly DataAccess _dataAccess;
 
       
@@ -28,14 +32,48 @@ namespace BusinessLogicLayer
             
             var user = new Usuario
             {
-                Username = username,
+                Nombre = username,
                 Password = password
             };
 
            
             var usuario = _dataAccess.Get<Usuario>(sp, user);
 
+            if (usuario != null)
+            {
+                Debug.WriteLine($"Usuario encontrado: {usuario.Nombre}");
+            }
+            else
+            {
+                Debug.WriteLine("Usuario no encontrado o credenciales incorrectas.");
+            }
+
+
             return usuario;
         }
+
+
+        public DataTable autenticar(string username, string passw)
+        {
+            var usr = _user.autenticar(username, passw);
+            if (usr != null)
+            {
+                return usr;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        public bool ValidarUsuario(string Nombre)
+        {
+            return _user.ValidarUsuario(Nombre);
+        }
+
+
+
+
     }
 }

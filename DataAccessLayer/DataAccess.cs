@@ -15,7 +15,7 @@ namespace DataAccessLayer
 
         public DataAccess()
         {
-            _objAccessCore = new AccesCore("CostaAzul");
+            _objAccessCore = new AccesCore("MyConnectionString");
         }
 
         public DataAccess(string connName)

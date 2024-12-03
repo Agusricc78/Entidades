@@ -155,12 +155,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Login.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -247,10 +246,10 @@
     <Content Include="Views\Home\HomTest.cshtml" />
     <Content Include="Views\Home\Carrito.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Login\ValidUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -265,6 +264,10 @@
     <ProjectReference Include="..\Entities\Entities.csproj">
       <Project>{ddb67491-f43e-499a-9300-d576dde49ca9}</Project>
       <Name>Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj">
+      <Project>{93DB28F5-04B2-4BD7-B875-C1BD245A1D20}</Project>
+      <Name>ServiceLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
