@@ -73,6 +73,17 @@ namespace BusinessLogicLayer
         }
 
 
+        public bool ValidarExistencia(string nom,string correo)
+        {
+            return _user.VerificarExistencia(nom, correo);
+        }
+
+        public int AgregarUser(string nom, int? tel, string correo, string contra)
+        {
+            return _user.RegistrarUsuario(nom,tel,correo,contra);
+        }
+
+
 
 
     }

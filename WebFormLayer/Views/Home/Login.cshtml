@@ -23,11 +23,13 @@
             <div class="alert alert-info">
                 @TempData["Message"]
             </div>
-           
+
 
         }
 
-        @using (Html.BeginForm("ValidUser", "Login", FormMethod.Post))
+
+
+        @*   @using (Html.BeginForm("ValidUser", "Login", FormMethod.Post))
         {
             <div>
                 <label for="Username">Usuario</label>
@@ -40,8 +42,30 @@
             <div>
                 <button type="submit">Ingresar</button>
             </div>
+
         }
-       
+        *@
+
+        <form method="post" action="@Url.Action("ValidUser", "Login")">
+            <div>
+                <label for="Username">Usuario</label>
+                <input type="text" id="Username" name="Username" placeholder="Ingrese su usuario" required />
+            </div>
+            <div>
+                <label for="Password">Contraseña</label>
+                <input type="password" id="Password" name="Password" placeholder="Ingrese su contraseña" required />
+            </div>
+            <div>
+                <button type="submit">Ingresar</button>
+            </div>
+        </form>
+
+
+        <form method="post" action="@Url.Action("Registrar","Login")">
+            <button type="submit">Registrarte</button>
+        </form>
+
+
         @if (!ViewData.ModelState.IsValid)
         {
             <div class="alert alert-danger">
@@ -52,7 +76,7 @@
                     }
                 </ul>
             </div>
-            }
+        }
     </div>
 </body>
 </html>

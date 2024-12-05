@@ -17,77 +17,82 @@ namespace WebFormLayer.Controllers
 
         SessionManager sm = new SessionManager();
 
-        // Constructor para inyectar LoginService
+        
         public LoginController()
         {
-            _loginService = new LoginService();  // Inicializa el servicio de login
+            _loginService = new LoginService();  
         }
 
-        // Acción GET: Muestra el formulario de login
         [HttpGet]
         public ActionResult Login()
         {
-            return View();  // Retorna la vista de login vacía
+            return View();  
         }
 
 
+        [HttpGet]
+        public ActionResult AgregarUsuario()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult Registrar()
+        {
+            return RedirectToAction("AgregarUsuario", "Login");
+        }
       
 
-
-
-        // Acción POST: Procesa los datos del formulario de login
         [HttpPost]
 
         public ActionResult ValidUser(LoginViewModel model)
         {
             try
             {
-                // Verificamos si ya hay una sesión activa
+                
                 if (SessionManager.GetInstance != null && SessionManager.GetInstance.SesionIniciada)
                 {
-                    // Si la sesión ya está activa, redirigimos al usuario a la página principal
                     TempData["Message"] = "¡Ya has iniciado sesión!";
                     
                 }
 
-                // Si el modelo es válido
+               
                 if (ModelState.IsValid)
                 {
-                    // Usamos el LoginService para validar el usuario
+                    
                     var user = _loginService.autenticar(model.Username, model.Password);
 
-                    // Verificamos si el usuario fue encontrado y tiene resultados válidos
                     if (user.Rows.Count > 0)
                     {
-                        // Si el usuario es válido, guardamos la sesión usando el SessionManager
+                       
                         try
                         {
-                            // Crear el objeto usuario
+                           
                             Usuario us = new Usuario
                             {
                                 Nombre = model.Username,
                                 Password = model.Password
                             };
 
-                            // Realizamos el login
-                            sm.Login(us.Nombre);  // Aquí gestionamos el login
+                            
+                            sm.Login(us.Nombre);  
 
-                            // Guardamos el usuario en la sesión
+                           
                             Session["Usuario"] = us;
                             TempData["Message"] = "¡Has iniciado sesión correctamente!";
 
-                            // Redirigimos a la página principal
-                            return RedirectToAction("Index", "Home");
+                            
+                            return RedirectToAction("Index","Home");
                         }
                         catch (Exception ex)
                         {
-                            // Si ocurre un error al intentar iniciar sesión
                             TempData["Message"] = "Error al intentar iniciar sesión: " + ex.Message;
                         }
                     }
                     else
                     {
-                        // Si las credenciales son incorrectas, mostramos un error
+                       
                         ModelState.AddModelError("", "Usuario o contraseña incorrectos.");
                     }
                 }
@@ -99,8 +104,8 @@ namespace WebFormLayer.Controllers
                 ModelState.AddModelError("", "Ocurrió un error al intentar iniciar sesión.");
             }
 
-            // Si no se ha podido autenticar o hubo un error, permanecemos en la vista de login
-            return View(model);  // Mantenemos al usuario en la página de login
+           
+            return View("Registrar","Shared");  
         }
 
 
@@ -113,7 +118,41 @@ namespace WebFormLayer.Controllers
             return RedirectToAction("Index", "Home");  // Redirige a la página principal
         }
 
+        [HttpPost]
 
+        public ActionResult AgregarUsuario(LoginViewModel model)
+        {
+            try
+            {
+                if(_loginService.ValidarExistencia(model.Username,model.Correo) == true)
+                {
+                    TempData["Message"] = "Usuario ya existe";
+
+                }
+                else
+                {
+                    var usuario = new Usuario
+                    {
+                        Nombre = model.Username,
+                        Password = model.Password,
+                        Correo = model.Correo,
+                        Telefono = model.Telefono,
+                         Activo = true,
+                    };
+                    _loginService.AgregarUser(usuario.Nombre,usuario.Telefono,usuario.Correo,usuario.Password);
+
+                    TempData["Message"] = "Usuario agregado correctamente";
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception ex) 
+            {
+                TempData["Message"] = ex.Message;
+            }
+            TempData["Message"] = "Usuario ya existe";
+            return View(model);
+
+         }
 
 
 

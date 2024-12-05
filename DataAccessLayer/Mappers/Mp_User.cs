@@ -28,15 +28,16 @@ namespace DataAccessLayer
             return cn.Leer("sp_GetUserByUsernameAndPassword", parametros);
         }
 
-        public int RegistrarUsuario(Usuario us)
+        public int RegistrarUsuario(string nom,int? tel,string correo,string contra)
         {
 
             
             SqlParameter[] sp = new SqlParameter[]
             {
-             
-             new SqlParameter("@Apellido",us.Apellido),
-
+             new SqlParameter("@Nombre",nom),
+             new SqlParameter("@Telefono",tel),
+             new SqlParameter("@Correo",correo),
+             new SqlParameter("@Password",contra)
              };
 
             return cn.Escribir("RegistrarUser", sp);
@@ -54,7 +55,7 @@ namespace DataAccessLayer
                  Direction = ParameterDirection.Output
                    }
             };
-            cn.Verificar("ValidarUsuario", parametros);
+            cn.Verificar("sp_VerificarUsuarioExistente", parametros);
 
             bool exists = (bool)parametros[1].Value;
             return exists;
@@ -97,7 +98,26 @@ namespace DataAccessLayer
         }
 
 
+        public bool VerificarExistencia(string nom, string correo)
+        {
+            SqlParameter[] param = new SqlParameter[]
+            {
+            new SqlParameter("@Nombre",nom ),
+            new SqlParameter("@Correo", correo),
+            new SqlParameter
+         {
+             ParameterName = "@Exists",
+             SqlDbType = SqlDbType.Bit,
+             Direction = ParameterDirection.Output
+         }
 
+         };
+
+            cn.Leer("sp_VerificarUsuarioExistente", param);
+
+            bool exists = (bool)param[2].Value;
+            return exists;
+        }
 
 
 
