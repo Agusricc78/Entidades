@@ -40,7 +40,10 @@ namespace BusinessLogicLayer
 
         }
 
-
+        public bool ValidarExistencia(string nom, int cod)
+        {
+            return mp.VerificarExistencia(nom, cod);
+        }
 
 
 

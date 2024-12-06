@@ -43,24 +43,7 @@ namespace DataAccessLayer
             return cn.Escribir("RegistrarUser", sp);
         }
 
-        public bool ValidarUsuario(string nombre)
-        {
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                   new SqlParameter("@Nombre", nombre),
-                   new SqlParameter
-                   {
-                 ParameterName = "@Exists",
-                 SqlDbType = SqlDbType.Bit,
-                 Direction = ParameterDirection.Output
-                   }
-            };
-            cn.Verificar("sp_VerificarUsuarioExistente", parametros);
-
-            bool exists = (bool)parametros[1].Value;
-            return exists;
-        }
-
+      
 
         public Usuario ObtenerUsuarioXNom(string Nombre)
         {

@@ -13,9 +13,11 @@ namespace Entities
         public string Descripcion{ get; set; }
         public decimal Precio { get; set; }
         public int Codigo { get; set; } 
-        public string Categoria { get; set; }   
+        public string Id_Categoria { get; set; }   
         public bool Activo { get; set; }
         public string Imagen { get; set; }
+        public int stock { get; set; }
+
 
 
     }

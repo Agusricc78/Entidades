@@ -51,7 +51,26 @@ namespace DataAccessLayer.Mappers
             return cn.Escribir(storeProc, parametros);
         }
 
+        public bool VerificarExistencia(string nom, int codigo)
+        {
+            SqlParameter[] param = new SqlParameter[]
+            {
+            new SqlParameter("@Nombre",nom ),
+            new SqlParameter("@Cod_Producto", codigo),
+            new SqlParameter
+         {
+             ParameterName = "@Exists",
+             SqlDbType = SqlDbType.Bit,
+             Direction = ParameterDirection.Output
+         }
 
+         };
+
+            cn.Leer("sp_VerificarUsuarioExistente", param);
+
+            bool exists = (bool)param[2].Value;
+            return exists;
+        }
 
 
 

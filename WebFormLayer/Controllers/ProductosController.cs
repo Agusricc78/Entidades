@@ -50,37 +50,57 @@ namespace WebFormLayer.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (producto != null)
                 {
-
-                    Productos prod = new Productos
+                    if(Pro.ValidarExistencia(producto.Nombre,producto.Codigo) == true)
                     {
-                        Id_Producto = producto.Id_Producto,
-                        Nombre = producto.Nombre,
-                        Codigo = producto.Codigo,
-                        Descripcion = producto.Descripcion,
-                        Categoria = producto.Categoria,
-                        Activo = producto.Activo,
-                        Imagen = producto.Imagen,
-                        Precio = producto.Precio,
-
-                    };
 
 
 
-                    if (prod != null)
+
+
+
+                        if (ModelState.IsValid)
+                        {
+
+                            Productos prod = new Productos
+                            {
+                                Id_Producto = producto.Id_Producto,
+                                Nombre = producto.Nombre,
+                                Codigo = producto.Codigo,
+                                Descripcion = producto.Descripcion,
+                                Id_Categoria = producto.Id_Categoria,
+                                Activo = producto.Activo,
+                                Imagen = producto.Imagen,
+                                Precio = producto.Precio,
+
+                            };
+
+
+
+                            if (prod != null)
+                            {
+                                Pro.AgregarProducto(prod);
+                            }
+
+
+                            TempData["Message"] = "Producto Creado Correctamente";
+
+                            return View("Productos", "Home");
+
+                        }
+                    }
+                    else
                     {
-                        Pro.AgregarProducto(prod);
+                        TempData["Message"] = "Producto ya existe";
                     }
 
 
-                    TempData["Message"] = "Producto Creado Correctamente";
-
-                    return View("Productos","Home");
-
-
                 }
-                
+                else
+                {
+                    TempData["Message"] = "Faltan completar datos para agregar un producto";
+                }
 
             }
             catch(Exception ex) 
@@ -90,6 +110,12 @@ namespace WebFormLayer.Controllers
 
             return View(producto);
         }
+
+
+
+
+
+
 
      
     }
