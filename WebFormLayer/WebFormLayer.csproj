@@ -221,6 +221,7 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -250,14 +251,14 @@
     <Content Include="Views\Home\HomTest.cshtml" />
     <Content Include="Views\Home\Carrito.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
-    <Content Include="Views\Home\Productos.cshtml" />
+    <Content Include="Views\Productos\Productos.cshtml" />
     <Content Include="Views\Shared\AgregarUsuario.cshtml" />
+    <Content Include="Views\Productos\ProductosListView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Login\" />
     <Folder Include="Views\Pago\" />
-    <Folder Include="Views\Productos\" />
     <Folder Include="Views\Registrar\" />
   </ItemGroup>
   <ItemGroup>
@@ -266,17 +267,9 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BusinessLogicLayer\BusinessLogicLayer.csproj">
-      <Project>{8b112100-d872-4fda-bb90-70881c62acae}</Project>
-      <Name>BusinessLogicLayer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Entities\Entities.csproj">
       <Project>{ddb67491-f43e-499a-9300-d576dde49ca9}</Project>
       <Name>Entities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj">
-      <Project>{93DB28F5-04B2-4BD7-B875-C1BD245A1D20}</Project>
-      <Name>ServiceLayer</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

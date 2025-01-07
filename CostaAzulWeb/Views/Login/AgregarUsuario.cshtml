@@ -1,0 +1,70 @@
+﻿@model CostaAzulWeb.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "AgregarUsuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Agregar Usuario</h2>
+
+<form asp-action="AgregarUsuario" method="post" class="form-horizontal">
+    <div>
+        <h4>Registro de Usuario</h4>
+        <hr />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Username" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Telefono" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Telefono" class="form-control" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Correo" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Correo" class="form-control" type="email" />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Activo" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <input asp-for="Activo" class="form-check-input" type="checkbox" />
+                <span asp-validation-for="Activo" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-primary">Registrarte</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Volver a la lista</a>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

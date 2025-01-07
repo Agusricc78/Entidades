@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "HomeTest";
+}
+
+<main>
+    <h2 id="title">@ViewBag.Title.</h2>
+    <h3>@ViewBag.Message</h3>
+
+    <!-- Masthead Section -->
+    <section class="row" aria-labelledby="title">
+        <h1 id="title" class="text-center">Costa Azul</h1>
+        <p class="lead text-center">A free, responsive, one-page Bootstrap theme created by Start Bootstrap.</p>
+        <p class="text-center"><a href="#about" class="btn btn-primary btn-md">Get Started</a></p>
+    </section>
+
+    <!-- About Section -->
+    <section class="row" aria-labelledby="aboutTitle">
+        <h2 id="aboutTitle" class="text-center">Built with Bootstrap 5</h2>
+        <div class="col-md-8 mx-auto">
+            <p class="text-center text-white-50">
+                Grayscale is a free Bootstrap theme created by Start Bootstrap. It can be yours right now, simply download the template on
+                <a href="https://startbootstrap.com/theme/grayscale/" class="text-decoration-none">the preview page.</a>
+                The theme is open source, and you can use it for any purpose, personal or commercial.
+            </p>
+        </div>
+        <div class="col-12 text-center">
+            <img class="img-fluid" src="~/Img/ipad.png" alt="..." />
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="row" aria-labelledby="projectsTitle">
+        <h2 id="projectsTitle" class="text-center col-12 mb-4">Featured Projects</h2>
+
+        <!-- Project One -->
+        <div class="col-md-4 mb-4">
+            <img class="img-fluid" src="~/Img/bg-masthead.jpg" alt="..." />
+            <h4 class="text-center">Shoreline</h4>
+            <p class="text-center text-black-50">Grayscale is open source and MIT licensed. This means you can use it for any project - even commercial projects! Download it, customize it, and publish your website!</p>
+        </div>
+
+        <!-- Project Two -->
+        <div class="col-md-4 mb-4">
+            <img class="img-fluid" src="~/Img/demo-image-02.jpg" alt="..." />
+            <h4 class="text-center">Misty</h4>
+            <p class="text-center text-white-50">An example of where you can put an image of a project, or anything else, along with a description.</p>
+        </div>
+
+        <!-- Project Three -->
+        <div class="col-md-4 mb-4">
+            <img class="img-fluid" src="~/Img/demo-image-01.jpg" alt="..." />
+            <h4 class="text-center">Mountains</h4>
+            <p class="text-center text-white-50">Another example of a project with its respective description. These sections work well responsively as well!</p>
+        </div>
+    </section>
+
+    <!-- Subscribe Section -->
+    <section class="row" aria-labelledby="subscribeTitle">
+        <h2 id="subscribeTitle" class="text-center col-12 mb-4 text-white">Subscribe to receive updates!</h2>
+        <div class="col-md-10 col-lg-8 mx-auto text-center">
+            <form class="form-signup" id="contactForm" data-sb-form-api-token="API_TOKEN">
+                <div class="row input-group-newsletter justify-content-center">
+                    <div class="col-md-6">
+                        <input class="form-control" id="emailAddress" type="email" placeholder="Enter email address..." aria-label="Enter email address..." data-sb-validations="required,email" />
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary disabled" id="submitButton" type="submit">Notify Me!</button>
+                    </div>
+                </div>
+                <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:required">An email is required.</div>
+                <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:email">Email is not valid.</div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="row" aria-labelledby="contactTitle">
+        <h2 id="contactTitle" class="text-center col-12 mb-4 text-white">Contact Us</h2>
+
+        <!-- Address -->
+        <div class="col-md-4 mb-4">
+            <div class="card py-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-map-marked-alt text-primary mb-2"></i>
+                    <h4 class="text-uppercase m-0">Address</h4>
+                    <hr class="my-4 mx-auto" />
+                    <div class="small text-black-50">4923 Market Street, Orlando FL</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-4 mb-4">
+            <div class="card py-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope text-primary mb-2"></i>
+                    <h4 class="text-uppercase m-0">Email</h4>
+                    <hr class="my-4 mx-auto" />
+                    <div class="small text-black-50"><a href="#!">hello@yourdomain.com</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="col-md-4 mb-4">
+            <div class="card py-4 h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-mobile-alt text-primary mb-2"></i>
+                    <h4 class="text-uppercase m-0">Phone</h4>
+                    <hr class="my-4 mx-auto" />
+                    <div class="small text-black-50">+1 (555) 902-8832</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="social d-flex justify-content-center col-12 mb-4">
+            <a class="mx-2" href="#!"><i class="fab fa-twitter"></i></a>
+            <a class="mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
+            <a class="mx-2" href="#!"><i class="fab fa-github"></i></a>
+        </div>
+    </section>
+</main>

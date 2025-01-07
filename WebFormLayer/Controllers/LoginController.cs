@@ -1,5 +1,4 @@
-﻿using BusinessLogicLayer;
-using Entities;
+﻿using Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +6,10 @@ using System.Web;
 using WebFormLayer.Models;
 using System.Web.Mvc;
 using System.Web.Services.Description;
-using ServiceLayer;
 
 namespace WebFormLayer.Controllers
 {
-    public class LoginController : Controller
+   /* public class LoginController : Controller
     {
         private readonly LoginService _loginService;
 
@@ -157,6 +155,5 @@ namespace WebFormLayer.Controllers
 
 
 
-
+    */
     }
-}

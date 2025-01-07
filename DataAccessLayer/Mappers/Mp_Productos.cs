@@ -16,20 +16,19 @@ namespace DataAccessLayer.Mappers
 
         public int AgregarProducto(Productos pro)
         {
-            PropertyInfo[] Propsentity = pro.GetType().GetProperties();
-            List<SqlParameter> ListPara = new List<SqlParameter>();
-
-            foreach (PropertyInfo pi in Propsentity)
+            SqlParameter[] parametros = new SqlParameter[]
             {
-                string name = pi.Name;
-                object valor = pi.GetValue(pro);
+             new SqlParameter("@Nombre",pro.Nombre),
+             new SqlParameter("@Descripcion",pro.Descripcion),
+             new SqlParameter("@Activo",pro.Activo),
+             new SqlParameter("@Id_Categoria",pro.Id_Categoria),
+             new SqlParameter("@Cod_Producto",pro.Cod_Producto),
+             new SqlParameter("@Stock",pro.stock),
+             new SqlParameter("@Precio",pro.Precio),
+             new SqlParameter("@Imagen",pro.Imagen),
 
-                SqlParameter parametros = new SqlParameter($"@{name}", valor);
-
-                ListPara.Add(parametros);
-            }
-
-            return cn.Escribir("AgregarProducto", ListPara.ToArray());
+            };
+            return cn.Escribir("AgregarProducto", parametros);
         }
 
         public DataTable ListarProductos()
@@ -44,7 +43,7 @@ namespace DataAccessLayer.Mappers
 
             SqlParameter[] parametros = new SqlParameter[]
             {
-            new SqlParameter("@Id_Producto",id)
+            new SqlParameter("@Cod_Producto",id)
             };
 
 
@@ -66,11 +65,51 @@ namespace DataAccessLayer.Mappers
 
          };
 
-            cn.Leer("sp_VerificarUsuarioExistente", param);
+            cn.Leer("sp_VerificarProducto", param);
 
             bool exists = (bool)param[2].Value;
             return exists;
         }
+
+        public Productos ObtenerProducto(int cod)
+        {
+            
+            SqlParameter[] parametros = new SqlParameter[]
+               {
+                   new SqlParameter("@Cod_Producto", cod)
+
+               };
+            DataTable dt = cn.Leer("ObtenerProductoXCod", parametros);
+            if (dt.Rows.Count > 0)
+            {
+                DataRow fila = dt.Rows[0];
+
+                // Mapea los datos del DataRow a un objeto Usuario
+                Productos pro = new Productos
+                {
+                    Id_Producto = Convert.ToInt32(fila["Id_Producto"]),
+                    Nombre = Convert.ToString(fila["Nombre"]),
+                    Cod_Producto = Convert.ToInt32(fila["Cod_Producto"]),
+                    Activo = Convert.ToBoolean(fila["Activo"]),
+                    Id_Categoria = Convert.ToString(fila["Id_Categoria"]),
+                    Precio = Convert.ToInt32(fila["Precio"]),
+                    stock = Convert.ToInt32(fila["Stock"]),
+                    Descripcion = Convert.ToString(fila["Descripcion"]),
+                    Imagen = Convert.ToString(fila["Imagen"]),
+                    
+
+                };
+                return pro;
+
+
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+     
 
 
 

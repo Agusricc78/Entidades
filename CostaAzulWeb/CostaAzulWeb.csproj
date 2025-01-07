@@ -1,0 +1,101 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Content\bootstrap-grid.css" />
+    <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Content\bootstrap-grid.min.css" />
+    <Content Include="Content\bootstrap-grid.min.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.css" />
+    <Content Include="Content\bootstrap-grid.rtl.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.min.css" />
+    <Content Include="Content\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.css" />
+    <Content Include="Content\bootstrap-reboot.css.map" />
+    <Content Include="Content\bootstrap-reboot.min.css" />
+    <Content Include="Content\bootstrap-reboot.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.css" />
+    <Content Include="Content\bootstrap-reboot.rtl.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.min.css" />
+    <Content Include="Content\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.css" />
+    <Content Include="Content\bootstrap-utilities.css.map" />
+    <Content Include="Content\bootstrap-utilities.min.css" />
+    <Content Include="Content\bootstrap-utilities.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.css" />
+    <Content Include="Content\bootstrap-utilities.rtl.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.min.css" />
+    <Content Include="Content\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.rtl.css" />
+    <Content Include="Content\bootstrap.rtl.css.map" />
+    <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\bootstrap.rtl.min.css.map" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Content\styles.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Img\1309.png" />
+    <None Include="wwwroot\Img\341.png" />
+    <None Include="wwwroot\Img\7181.png" />
+    <None Include="wwwroot\Img\bg-masthead.jpg" />
+    <None Include="wwwroot\Img\bg-signup.jpg" />
+    <None Include="wwwroot\Img\demo-image-01.jpg" />
+    <None Include="wwwroot\Img\demo-image-02.jpg" />
+    <None Include="wwwroot\Img\favicon.ico" />
+    <None Include="wwwroot\Img\ipad.png" />
+    <None Include="wwwroot\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\js\bootstrap.esm.js" />
+    <None Include="wwwroot\js\bootstrap.esm.js.map" />
+    <None Include="wwwroot\js\bootstrap.esm.min.js" />
+    <None Include="wwwroot\js\bootstrap.esm.min.js.map" />
+    <None Include="wwwroot\js\bootstrap.js" />
+    <None Include="wwwroot\js\bootstrap.js.map" />
+    <None Include="wwwroot\js\bootstrap.min.js" />
+    <None Include="wwwroot\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\js\jquery-3.4.1.intellisense.js" />
+    <None Include="wwwroot\js\jquery-3.4.1.js" />
+    <None Include="wwwroot\js\jquery-3.4.1.min.js" />
+    <None Include="wwwroot\js\jquery-3.4.1.min.map" />
+    <None Include="wwwroot\js\jquery-3.4.1.slim.js" />
+    <None Include="wwwroot\js\jquery-3.4.1.slim.min.js" />
+    <None Include="wwwroot\js\jquery-3.4.1.slim.min.map" />
+    <None Include="wwwroot\js\jquery.validate-vsdoc.js" />
+    <None Include="wwwroot\js\jquery.validate.js" />
+    <None Include="wwwroot\js\jquery.validate.min.js" />
+    <None Include="wwwroot\js\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\js\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\js\modernizr-2.8.3.js" />
+    <None Include="wwwroot\js\scripts.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
+    <PackageReference Include="mercadopago-sdk" Version="2.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessLogicalLayer\BusinessLogicalLayer.csproj" />
+    <ProjectReference Include="..\Entities\Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+  </ItemGroup>
+
+</Project>

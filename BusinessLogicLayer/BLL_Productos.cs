@@ -16,7 +16,9 @@ namespace BusinessLogicLayer
 
         public int AgregarProducto(Productos ps) 
         {
-            return mp.AgregarProducto(ps);
+            
+                return mp.AgregarProducto(ps);
+           
         }
 
         public int EliminarProducto(int id)
@@ -45,7 +47,21 @@ namespace BusinessLogicLayer
             return mp.VerificarExistencia(nom, cod);
         }
 
+        public Productos ObtenerProducto(int cod)
+        {
+            try
+            {
+                
+                return mp.ObtenerProducto(cod);
 
+            }
+            catch 
+            {
+                return null;
+            }
+        }
+
+       
 
     }
 }

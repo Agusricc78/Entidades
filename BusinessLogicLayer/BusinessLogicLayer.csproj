@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL_Categorias.cs" />
     <Compile Include="Bll_Login.cs" />
     <Compile Include="BLL_Productos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
