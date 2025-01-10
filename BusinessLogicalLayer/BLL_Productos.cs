@@ -21,7 +21,7 @@ namespace BusinessLogicLayer
            
         }
 
-        public int EliminarProducto(int id)
+        public int EliminarProducto(string id)
         {
             return mp.EliminarProducto(id);
         }
@@ -42,12 +42,12 @@ namespace BusinessLogicLayer
 
         }
 
-        public bool ValidarExistencia(string nom, int cod)
+        public bool ValidarExistencia( string cod)
         {
-            return mp.VerificarExistencia(nom, cod);
+            return mp.VerificarExistencia( cod);
         }
 
-        public Productos ObtenerProducto(int cod)
+        public Productos ObtenerProducto(string cod)
         {
             try
             {
@@ -65,6 +65,32 @@ namespace BusinessLogicLayer
         {
             return mp.EditarPro(Pro);
         }
+
+        public List<Productos> ListarPorCatalogo(int id)
+        {
+            DataTable dt = mp.ListarCatalogos(id);
+
+            List<Productos> productos = Helper.DataTableToList<Productos>(dt);
+
+            return productos;
+        }
+
+        public List<Productos> FiltrarProductos(int? categoriaId, int? lineaId, string codigo = null)
+        {
+            
+            DataTable dt = mp.FiltrarProductos(categoriaId, lineaId, codigo);
+
+
+            List<Productos> pro = Helper.DataTableToList<Productos>(dt);
+
+
+            return pro;
+
+        }
+
+
+
+
 
     }
 }

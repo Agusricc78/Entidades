@@ -157,6 +157,54 @@ namespace DataAccesLayer
             return Resultado;
         }
 
+        public int EscribirConRetorno(string storeProc, SqlParameter[] parametros)
+        {
+            int resultado = 0;
+
+            // Conectar a la base de datos
+            Conectar();
+
+            cmd = new SqlCommand(storeProc, conector);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddRange(parametros);
+
+            // Iniciar la transacción
+            TR = conector.BeginTransaction();
+            cmd.Transaction = TR;
+
+            try
+            {
+                // Ejecutar el comando y capturar el valor devuelto por el procedimiento
+                var returnParameter = new SqlParameter
+                {
+                    ParameterName = "@ReturnValue",
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(returnParameter);
+
+                cmd.ExecuteNonQuery();
+
+                // Confirmar la transacción
+                AceptarTX();
+
+                // Obtener el valor devuelto
+                resultado = (int)returnParameter.Value;
+            }
+            catch
+            {
+                // Revertir la transacción en caso de error
+                CancelarTX();
+                resultado = -1;
+            }
+            finally
+            {
+                // Desconectar de la base de datos
+                Desconectar();
+            }
+
+            return resultado;
+        }
 
 
     }

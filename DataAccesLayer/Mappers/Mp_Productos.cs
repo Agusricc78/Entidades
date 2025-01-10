@@ -19,7 +19,7 @@ namespace DataAccessLayer.Mappers
         {
             SqlParameter[] parametros = new SqlParameter[]
             {
-             new SqlParameter("@Nombre",pro.Nombre),
+             new SqlParameter("@Id_Linea",pro.Id_Linea),
              new SqlParameter("@Descripcion",pro.Descripcion),
              new SqlParameter("@Activo",pro.Activo),
              new SqlParameter("@Id_Categoria",pro.Id_Categoria),
@@ -27,7 +27,7 @@ namespace DataAccessLayer.Mappers
              new SqlParameter("@Stock",pro.stock),
              new SqlParameter("@Precio",pro.Precio),
              new SqlParameter("@Imagen",pro.Imagen),
-
+             new SqlParameter("@Id_Catalogo",pro.Id_Catalogo),
             };
             return cn.Escribir("AgregarProducto", parametros);
         }
@@ -37,7 +37,7 @@ namespace DataAccessLayer.Mappers
             return cn.Leer("ListarProductos");
         }
 
-        public int EliminarProducto(int id)
+        public int EliminarProducto(string id)
         {
             string storeProc = "EliminarProductoxId";
 
@@ -51,11 +51,11 @@ namespace DataAccessLayer.Mappers
             return cn.Escribir(storeProc, parametros);
         }
 
-        public bool VerificarExistencia(string nom, int codigo)
+        public bool VerificarExistencia(string codigo)
         {
             SqlParameter[] param = new SqlParameter[]
             {
-            new SqlParameter("@Nombre",nom ),
+            
             new SqlParameter("@Cod_Producto", codigo),
             new SqlParameter
          {
@@ -68,11 +68,11 @@ namespace DataAccessLayer.Mappers
 
             cn.Leer("sp_VerificarProducto", param);
 
-            bool exists = (bool)param[2].Value;
+            bool exists = (bool)param[1].Value;
             return exists;
         }
 
-        public Productos ObtenerProducto(int cod)
+        public Productos ObtenerProducto(string cod)
         {
             
             SqlParameter[] parametros = new SqlParameter[]
@@ -89,15 +89,15 @@ namespace DataAccessLayer.Mappers
                 Productos pro = new Productos
                 {
                     Id_Producto = Convert.ToInt32(fila["Id_Producto"]),
-                    Nombre = Convert.ToString(fila["Nombre"]),
-                    Cod_Producto = Convert.ToInt32(fila["Cod_Producto"]),
+                    Id_Linea = Convert.ToInt32(fila["Id_Linea"]),
+                    Cod_Producto = Convert.ToString(fila["Cod_Producto"]),
                     Activo = Convert.ToBoolean(fila["Activo"]),
                     Id_Categoria = Convert.ToString(fila["Id_Categoria"]),
                     Precio = Convert.ToInt32(fila["Precio"]),
                     stock = Convert.ToInt32(fila["Stock"]),
                     Descripcion = Convert.ToString(fila["Descripcion"]),
                     Imagen = Convert.ToString(fila["Imagen"]),
-                    
+                    Id_Catalogo = Convert.ToInt32(fila["Id_Producto"]),
 
                 };
                 return pro;
@@ -116,7 +116,7 @@ namespace DataAccessLayer.Mappers
             SqlParameter[] parametros = new SqlParameter[]
             {
                 new SqlParameter("Id_Producto",pro.Id_Producto),
-             new SqlParameter("@Nombre",pro.Nombre),
+             new SqlParameter("@Id_Linea",pro.Id_Linea),
              new SqlParameter("@Descripcion",pro.Descripcion),
              new SqlParameter("@Activo",pro.Activo),
              new SqlParameter("@Id_Categoria",pro.Id_Categoria),
@@ -124,12 +124,37 @@ namespace DataAccessLayer.Mappers
              new SqlParameter("@Stock",pro.stock),
              new SqlParameter("@Precio",pro.Precio),
              new SqlParameter("@Imagen",pro.Imagen),
+             new SqlParameter("@Id_Catalogo",pro.Id_Catalogo)
 
             };
             return cn.Escribir("EditarProducto", parametros);
         }
 
 
+        public DataTable ListarCatalogos(int id)
+        {
+            string storeProc = "ListarProductosXCatalogo";
+
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+            new SqlParameter("@Id_Catalogo",id)
+            };
+            return cn.Leer(storeProc, parametros);
+        }
+
+
+        public DataTable FiltrarProductos(int? categoriaId, int? lineaId, string codigo)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+        new SqlParameter("@Id_Categoria", categoriaId ?? (object)DBNull.Value),
+        new SqlParameter("@Id_Linea", lineaId ?? (object)DBNull.Value),
+        new SqlParameter("@Cod_Producto", string.IsNullOrEmpty(codigo) ? (object)DBNull.Value : codigo)
+            };
+
+            return cn.Leer("FiltrarProductos", parametros);
+        }
 
 
 

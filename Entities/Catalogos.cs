@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Entities
 {
-    internal class CarritoCompras
+    public class Catalogos
     {
+        public int Id_Catalogo { get; set; }
+
+        public string Nombre { get; set; }
+
+
+
+
     }
 }

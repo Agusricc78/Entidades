@@ -1,0 +1,63 @@
+﻿@model ProductoViewModel
+
+@{
+    ViewBag.Title = "Lista de Productos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Lista de Productos</h2>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <label for="categoriaId" class="form-label">Categoría</label>
+            <select id="categoriaId" class="form-select" onchange="filtrarProductos()">
+                <option value="">Todas</option>
+                @foreach (var categoria in Model.Categorias)
+                {
+                    <option value="@categoria.Id_Categoria">@categoria.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="lineaId" class="form-label">Línea</label>
+            <select id="lineaId" class="form-select" onchange="filtrarProductos()">
+                <option value="">Todas</option>
+                @foreach (var linea in Model.Lineas)
+                {
+                    <option value="@linea.Id_Linea">@linea.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="codigo" class="form-label">Buscar por Código</label>
+            <div class="input-group">
+                <input type="text" id="codigo" class="form-control" placeholder="Código de producto" onkeyup="filtrarProductos()" />
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Productos -->
+    <div class="row" id="product-list">
+        @foreach (var producto in Model.ListaProductos)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card product-card shadow-sm">
+                    <img src="~/Img/@producto.Imagen" class="card-img-top product-image" alt="@producto.NombreLinea">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@producto.NombreLinea</h5>
+                        <p class="card-text">@producto.Descripcion</p>
+                        <p class="text-primary fw-bold">Precio: $@producto.Precio</p>
+                        <button class="btn btn-outline-primary" onclick="agregarAlCarrito(@producto.Id_Producto)">Agregar al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

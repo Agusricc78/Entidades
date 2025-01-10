@@ -81,7 +81,10 @@ namespace BusinessLogicLayer
         }
 
 
-
+        public Usuario ObtenerUserXNombre(string nom)
+        {
+            return _user.ObtenerUsuarioXNom(nom);
+        }
 
     }
 }

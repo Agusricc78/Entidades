@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Grpc.Core;
 using System.Reflection;
+using System.Net.Http.Headers;
 
 namespace CostaAzulWeb.Controllers
 {
@@ -16,11 +17,15 @@ namespace CostaAzulWeb.Controllers
     {
         private readonly BLL_Productos _pro;
         private readonly BLL_Categorias _cat;
+        private readonly BusinessLogicalLayer.BLL_Catalogos catalogo;
+        private readonly BusinessLogicalLayer.BLL_Lineas linea;
 
         public ProductosController()
         {
             _pro = new BLL_Productos();
             _cat = new BLL_Categorias();
+            catalogo = new BusinessLogicalLayer.BLL_Catalogos();
+            linea = new BusinessLogicalLayer.BLL_Lineas();
         }
 
         [HttpGet]
@@ -30,11 +35,15 @@ namespace CostaAzulWeb.Controllers
             {
                 var categorias = _cat.listarCat();
                 var productos = _pro.ObtenerProductos();
+                var catalogos = catalogo.Listar();
+                var lineas = linea.listarCat();
 
                 var model = new ProductoViewModel
                 {
                     Categorias = categorias,
                     ListaProductos = productos,
+                    Catalogos = catalogos,
+                    Lineas = lineas
                 };
 
                 return View(model);
@@ -63,11 +72,18 @@ namespace CostaAzulWeb.Controllers
                 ModelState.Remove(nameof(producto.NombreCategoria));
                 ModelState.Remove(nameof(producto.Categorias));
                 ModelState.Remove(nameof(producto.Imagen));
+                ModelState.Remove(nameof(producto.Id_Catalogo));
+                ModelState.Remove(nameof(producto.CatalogosSelectList));
+                ModelState.Remove(nameof(producto.Catalogos));
+                ModelState.Remove(nameof(producto.Id_Linea));
+                ModelState.Remove(nameof(producto.LineasSelectList));
+                ModelState.Remove(nameof(producto.Lineas));
+                ModelState.Remove(nameof(producto.NombreLinea));
 
                 if (ModelState.IsValid)
                 {
                     // Verificar existencia
-                    if (_pro.ValidarExistencia(producto.Nombre, producto.Codigo))
+                    if (_pro.ValidarExistencia(producto.Codigo))
                     {
                         TempData["Message"] = "El producto ya existe.";
                         return RedirectToAction("Productos");
@@ -89,10 +105,11 @@ namespace CostaAzulWeb.Controllers
                     // Crear entidad Producto y guardar en la base de datos
                     var prod = new Productos
                     {
-                        Nombre = producto.Nombre,
+                        Id_Linea = producto.Id_Linea,
                         Cod_Producto = producto.Codigo,
                         Descripcion = producto.Descripcion,
                         Id_Categoria = producto.Id_Categoria,
+                        Id_Catalogo = producto.Id_Catalogo,
                         Activo = producto.Activo,
                         Imagen = producto.Imagen,
                         Precio = producto.Precio,
@@ -126,7 +143,7 @@ namespace CostaAzulWeb.Controllers
                 ModelState.Remove(nameof(model.NombreCategoria));
                 ModelState.Remove(nameof(model.Categorias));
                 ModelState.Remove(nameof(model.Imagen));
-
+                ModelState.Remove(nameof(model.Id_Catalogo));
 
                 if (ModelState.IsValid)
                 {
@@ -147,7 +164,7 @@ namespace CostaAzulWeb.Controllers
                     var prod = new Productos
                     {
                         Id_Producto = objeto.Id_Producto,
-                        Nombre = objeto.Nombre,
+                        Id_Linea = objeto.Id_Linea,
                         Cod_Producto = objeto.Cod_Producto,
                         Descripcion = objeto.Descripcion,
                         Id_Categoria = objeto.Id_Categoria,
@@ -174,7 +191,7 @@ namespace CostaAzulWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             try
             {
@@ -211,5 +228,89 @@ namespace CostaAzulWeb.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet]
+        public IActionResult Ferrolux()
+        {
+            try
+            {
+                // Obtiene los productos del catálogo Ferrolux
+                var productos = _pro.ListarPorCatalogo(1); // Pasa el ID del catálogo como parámetro
+                var model = new ProductoViewModel
+                {
+                  
+                    ListaProductos = productos,
+                   
+                };
+
+                return View("Ferrolux",model);
+
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = $"Error al cargar los productos: {ex.Message}";
+                return View(new List<Productos>());
+            }
+        }
+        [HttpGet]
+        public IActionResult Rustica()
+        {
+            try
+            {
+                // Obtiene los productos del catálogo Ferrolux
+                var productos = _pro.ListarPorCatalogo(2); // Pasa el ID del catálogo como parámetro
+                var model = new ProductoViewModel
+                {
+
+                    ListaProductos = productos,
+
+                };
+
+                return View("Ferrolux", model);
+
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = $"Error al cargar los productos: {ex.Message}";
+                return View(new List<Productos>());
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult Lista(int? categoriaId = null, int? lineaId = null, string codigo = null)
+        {
+            try
+            {
+                // Obtener los productos filtrados según los parámetros
+                var productos = _pro.FiltrarProductos(categoriaId, lineaId, codigo);
+
+                // Preparar el modelo con las listas necesarias
+                var model = new ProductoViewModel
+                {
+                    ListaProductos = productos,
+                    Categorias = _cat.listarCat(), // Método para obtener categorías
+                    Lineas = linea.listarCat() // Método para obtener líneas
+                };
+
+                return View("ProductosCompletos",model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = $"Error al cargar los productos: {ex.Message}";
+                return View(new ProductoViewModel { ListaProductos = new List<Productos>() });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
 }

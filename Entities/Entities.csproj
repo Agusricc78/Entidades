@@ -41,9 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CarrittoCompras.cs" />
+    <Compile Include="Carrito.cs" />
+    <Compile Include="Catalogos.cs" />
     <Compile Include="Categorias.cs" />
     <Compile Include="Cliente.cs" />
+    <Compile Include="Linea.cs" />
     <Compile Include="Pedido.cs" />
     <Compile Include="Productos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

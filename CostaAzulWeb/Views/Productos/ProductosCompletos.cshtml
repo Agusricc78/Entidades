@@ -1,0 +1,82 @@
+﻿@model ProductoViewModel
+
+<div class="container mt-4">
+    <h2 class="text-center">Lista de Productos</h2>
+
+    <!-- Mostrar mensajes de TempData -->
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="Lista" method="get" class="mb-4">
+        <div class="row">
+            <!-- Categoría -->
+            <div class="col-md-4">
+                <label for="categoriaId">Categorías</label>
+                <select class="form-select" id="categoriaId" name="categoriaId">
+                    <option value="">Todas las categorías</option>
+                    @foreach (var categoria in Model.Categorias)
+                    {
+                        <option value="@categoria.Id_Categoria">
+                            @categoria.Nombre
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <!-- Línea -->
+            <div class="col-md-4">
+                <label for="lineaId">Líneas de Productos</label>
+                <select class="form-select" id="lineaId" name="lineaId">
+                    <option value="">Todas las líneas</option>
+                    @foreach (var linea in Model.Lineas)
+                    {
+                        <option value="@linea.Id_Linea">
+                            @linea.Nombre
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <!-- Código -->
+            <div class="col-md-4">
+                <label for="codigo">Buscar por Código</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="codigo" name="codigo" placeholder="Código de producto">
+                    <button id="buscarBtn" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Lista de productos -->
+    <div class="row">
+        @foreach (var producto in Model.ListaProductos)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <img class="card-img-top" src="~/Img/@producto.Imagen" alt="@producto.NombreLinea">
+                    <div class="card-body">
+                        <h5 class="card-title">@producto.Cod_Producto</h5>
+                        <p class="card-text">@producto.Descripcion</p>
+                        <p class="card-text"><strong>Precio:</strong> $@producto.Precio</p>
+                        <form asp-action="AgregarProducto" asp-controller="Carrito" method="post">
+                            <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
+                            <button type="submit" class="btn btn-primary">Agregar al Carrito</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/productos.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7MQl2GE8lEfFNvN5JLPf42VhK3z1kJ8t4lF" crossorigin="anonymous"></script>

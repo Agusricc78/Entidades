@@ -1,0 +1,119 @@
+﻿
+/* General styles */
+body {
+    background-color: #f5fafd; /* Fondo azul claro */
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Catalog card styles */
+.catalog-card {
+    width: 100%;
+    max-width: 450px; /* Ajusta el ancho máximo para las cartas */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: auto; /* Centra las cartas horizontalmente */
+}
+
+    .catalog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+/* Image container */
+.catalog-image-container {
+    width: 100%;
+    height: 300px; /* Reduce la altura del contenedor */
+    overflow: hidden;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    justify-content: center; /* Centra horizontalmente la imagen */
+    align-items: center; /* Centra verticalmente la imagen */
+}
+
+/* Image styles */
+.catalog-image {
+    width: auto; /* Ajusta la imagen proporcionalmente */
+    height: 100%; /* La imagen ocupa toda la altura del contenedor */
+    max-width: 100%; /* Evita que la imagen exceda el ancho del contenedor */
+    object-fit: contain; /* Asegura que la imagen se ajuste dentro del contenedor */
+    object-position: center;
+    transition: transform 0.3s ease; /* Efecto suave en hover */
+}
+
+    .catalog-image:hover {
+        transform: scale(1.05); /* Aplica un pequeño zoom */
+    }
+
+/* Card title */
+.card-title {
+    font-size: 1.5rem;
+    color: #0056b3;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* Primary button styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-size: 1rem;
+    padding: 0.5rem 1.25rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+/* Espaciado entre tarjetas */
+.catalog-card + .catalog-card {
+    margin-top: 20px; /* Espaciado vertical entre tarjetas */
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .catalog-card {
+        max-width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en pantallas pequeñas */
+    }
+
+    .catalog-image-container {
+        height: 250px; /* Reduce la altura en pantallas pequeñas */
+    }
+}
+
+/* About section styles */
+.about-section {
+    background-color: #ffffff; /* Cambia el fondo a blanco */
+    color: #333; /* Texto oscuro */
+    padding: 3rem 1rem; /* Espaciado interno */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .about-section h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        color: #0056b3; /* Azul oscuro */
+    }
+
+    .about-section p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #333; /* Asegura texto oscuro */
+    }
+
+    .about-section:hover {
+        transform: translateY(-5px); /* Efecto sutil al pasar el mouse */
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Sombra más intensa */
+    }

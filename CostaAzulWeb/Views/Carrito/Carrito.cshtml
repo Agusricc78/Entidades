@@ -1,0 +1,47 @@
+﻿@model CostaAzulWeb.Models.CarritoViewModel
+
+<div class="min-h-screen bg-blue-50 p-10">
+    <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Carrito de Compras</h1>
+    <table class="table-auto w-full border-collapse border border-blue-400">
+        <thead>
+            <tr class="bg-blue-100">
+                <th class="border border-blue-400 px-4 py-2">Imagen</th>
+                <th class="border border-blue-400 px-4 py-2">Descripción</th>
+                <th class="border border-blue-400 px-4 py-2">Precio Unitario</th>
+                <th class="border border-blue-400 px-4 py-2">Cantidad</th>
+                <th class="border border-blue-400 px-4 py-2">Código</th>
+                <th class="border border-blue-400 px-4 py-2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in Model.Productos)
+            {
+                <tr>
+                    <td class="border border-blue-400 px-4 py-2">
+                        <img src="~/Img/@producto.Imagen" alt="@producto.Descripcion" class="w-16 h-16 object-cover mx-auto">
+                    </td>
+                    <td class="border border-blue-400 px-4 py-2">@producto.Descripcion</td>
+                    <td class="border border-blue-400 px-4 py-2">$@producto.Precio</td>
+                    <td class="border border-blue-400 px-4 py-2">@producto.cant</td>
+                    <td class="border border-blue-400 px-4 py-2">@producto.Cod_Producto</td>
+                    <td class="border border-blue-400 px-4 py-2">
+                        <form method="post" asp-action="EliminarProducto" asp-controller="Carrito">
+                            <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
+                            <input type="hidden" name="Id_Carrito" value="@Model.Id_Carrito" />
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-6 text-right">
+        <p class="text-lg">Subtotal: <strong>$@Model.Subtotal</strong></p>
+        <p class="text-lg">Total: <strong>$@Model.Total</strong></p>
+
+        <form method="post" asp-action="FinalizarCompra" asp-controller="Carrito" class="inline-block">
+            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">Finalizar Compra</button>
+        </form>
+    </div>
+</div>

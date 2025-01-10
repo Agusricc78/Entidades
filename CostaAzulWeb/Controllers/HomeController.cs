@@ -3,11 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Entities;
 using Newtonsoft.Json;
+using BusinessLogicLayer;
 
 namespace CostaAzulWeb.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly BLL_Login log;
+
+        public HomeController()
+        {
+            log = new BLL_Login();
+        }
+
+
         public IActionResult Index()
         {
             // Verificar si existe la sesión y si está activa
@@ -17,9 +26,12 @@ namespace CostaAzulWeb.Controllers
             {
                 // Deserializar el objeto Usuario desde la sesión
                 var usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
+                var user = log.ObtenerUserXNombre(usuario?.Nombre);
 
                 ViewBag.IsLoggedIn = true;
-                ViewBag.UserName = usuario?.Nombre ?? "Usuario";
+                ViewBag.UserName = user?.Nombre ?? "Usuario";
+                ViewBag.UserId = user?.Id_Usuario;
+
             }
             else
             {
@@ -42,17 +54,36 @@ namespace CostaAzulWeb.Controllers
 
         public IActionResult Login()
         {
-            // Verificar si existe la sesión activa
+            // Verificar si existe una sesión activa
             var usuarioJson = HttpContext.Session.GetString("Usuario");
 
-            if (string.IsNullOrEmpty(usuarioJson))
+            if (!string.IsNullOrEmpty(usuarioJson))
             {
-                // Si no hay sesión activa, mostrar la vista de login
-                return View("Login");
+                // Si ya hay una sesión activa, configurar las variables necesarias
+                ViewBag.IsLoggedIn = true;
+
+                // Intentar deserializar el usuario para obtener más detalles
+                try
+                {
+                    var usuario = JsonConvert.DeserializeObject<Usuario>(usuarioJson);
+                    ViewBag.UserId = usuario.Id_Usuario;
+                    ViewBag.UserName = usuario.Nombre;
+                }
+                catch (Exception ex)
+                {
+                    TempData["Message"] = $"Error al deserializar la sesión: {ex.Message}";
+                }
+
+                // Redirigir al índice
+                return RedirectToAction("Index", "Home");
             }
 
-            // Si ya hay una sesión activa, redirigir al índice
-            return RedirectToAction("Index", "Home");
+            // Si no hay sesión activa, configurar las variables y mostrar la vista de login
+            ViewBag.IsLoggedIn = false;
+            ViewBag.UserId = null;
+            ViewBag.UserName = null;
+
+            return View("Login");
         }
 
 

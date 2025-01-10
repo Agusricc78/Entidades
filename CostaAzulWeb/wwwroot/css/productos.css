@@ -1,0 +1,22 @@
+﻿body {
+    background-color: #f2f6fc;
+}
+product-card {
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    color: #007bff;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#buscarBtn i {
+    margin-right: 5px; /* Espacio entre el ícono y el texto */
+}

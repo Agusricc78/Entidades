@@ -1,0 +1,57 @@
+﻿@model CostaAzulWeb.Models.ProductoViewModel
+
+<h1 class="text-center text-primary mt-4">Productos del Catálogo Ferrolux</h1>
+
+<div class="container mt-5">
+    @if (Model.ListaProductos != null && Model.ListaProductos.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var producto in Model.ListaProductos)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-img-top image-container">
+                            @if (!string.IsNullOrEmpty(producto.Imagen))
+                            {
+                                <img src="@Url.Content("~/Img/" + producto.Imagen)" alt="Imagen del producto" class="img-fluid product-image" />
+                            }
+                            else
+                            {
+                                <div class="no-image-placeholder">No hay imagen</div>
+                            }
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">@producto.Id_Linea</h5>
+                            <p class="card-text">@producto.Descripcion</p>
+                            <p class="card-text"><strong>Código:</strong> @producto.Cod_Producto</p>
+                            <p class="card-text">
+                                <span class="badge @(producto.Activo ? "bg-success" : "bg-danger")">
+                                    @(producto.Activo ? "Disponible" : "No Disponible")
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-center text-danger">No hay productos disponibles en este catálogo.</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Animación para las imágenes
+        document.querySelectorAll(".product-image").forEach(img => {
+            img.addEventListener("mouseover", () => {
+                img.style.transform = "scale(1.1)";
+                img.style.transition = "transform 0.3s ease-in-out";
+            });
+            img.addEventListener("mouseout", () => {
+                img.style.transform = "scale(1)";
+            });
+        });
+    </script>
+}

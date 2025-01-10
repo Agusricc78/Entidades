@@ -2,113 +2,90 @@
     ViewBag.Title = "Home Page";
 }
 
-<main>
-    <!-- About Section -->
-    <section class="row" aria-labelledby="aboutTitle">
-        <h2 id="aboutTitle" class="text-center">Built with Bootstrap 5</h2>
-        <div class="col-md-8 mx-auto">
-            <p class="text-center text-white-50">
-                Costa Azul es una empresa que se dedica a la venta de iluminación
-                <a href="https://startbootstrap.com/theme/grayscale/" class="text-decoration-none">Página Previa</a>
-            </p>
-        </div>
+<main style="background-color: floralwhite;">
+    <!-- Inicio -->
+    <section id="inicio" class="row position-relative" aria-labelledby="aboutTitle">
         <div class="col-12 text-center">
-            <img class="img-fluid" src="~/Img/ipad.png" alt="Imagen de ejemplo" />
+            <img class="img-fluid w-100" src="~/Img/Fondo.png" alt="Imagen de ejemplo" style="position: relative;">
+            <h2 id="aboutTitle" class="text-center text-white position-absolute top-50 start-50 translate-middle" style="opacity: 0.8; font-size: 4rem; font-weight: bold;">
+                Costa Azul
+            </h2>
         </div>
     </section>
 
     <!-- Projects Section -->
-    <section class="row" aria-labelledby="projectsTitle">
-        <h2 id="projectsTitle" class="text-center col-12 mb-4">Proyectos Destacados</h2>
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Ferrolux -->
+            <div class="col-md-6 mb-4">
+                <div class="card catalog-card">
+                    <div class="catalog-image-container">
+                        <img class="catalog-image" src="~/Img/fotocatalogoferrolux.png" alt="Ferrolux">
+                    </div>
+                    <div class="card-body text-center">
+                        <h4 class="card-title">Ferrolux</h4>
+                        <button class="btn btn-primary" onclick="location.href='@Url.Action("Ferrolux", "Productos", new { catalogo = "Ferrolux" })'">Ver Más</button>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Project One -->
-        <div class="col-md-4 mb-4">
-            <img class="img-fluid" src="~/Img/bg-masthead.jpg" alt="Proyecto 1" />
-            <h4 class="text-center">Shoreline</h4>
-            <p class="text-center text-black-50">Grayscale es de código abierto y con licencia MIT. ¡Úsalo para cualquier proyecto comercial o personal!</p>
+            <!-- Rústica -->
+            <div class="col-md-6 mb-4">
+                <div class="card catalog-card">
+                    <div class="catalog-image-container">
+                        <img class="catalog-image" src="~/Img/catalogorustica.png" alt="Rústica">
+                    </div>
+                    <div class="card-body text-center">
+                        <h4 class="card-title">Rústica</h4>
+                        <button class="btn btn-primary" onclick="location.href='@Url.Action("Rustica", "Productos", new { catalogo = "Rustica" })'">Ver Más</button>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- Project Two -->
-        <div class="col-md-4 mb-4">
-            <img class="img-fluid" src="~/Img/demo-image-02.jpg" alt="Proyecto 2" />
-            <h4 class="text-center">Misty</h4>
-            <p class="text-center text-white-50">Un ejemplo de cómo mostrar un proyecto con una descripción.</p>
-        </div>
 
-        <!-- Project Three -->
-        <div class="col-md-4 mb-4">
-            <img class="img-fluid" src="~/Img/demo-image-01.jpg" alt="Proyecto 3" />
-            <h4 class="text-center">Mountains</h4>
-            <p class="text-center text-white-50">Otro ejemplo de un proyecto con descripción. ¡Responsivo y adaptable!</p>
+   
+    <!-- Sección Sobre Nosotros -->
+    <section id="sobreNosotros" class="about-section">
+        <h2 class="text-dark mb-4">Sobre Nosotros</h2>
+        <div class="container">
+            <p class="lead text-dark">
+                En <strong>Costa Azul</strong>, somos líderes en la venta de iluminarias para hogares, negocios y proyectos arquitectónicos.
+                Ofrecemos un extenso catálogo de productos para satisfacer las necesidades tanto de clientes mayoristas como minoristas.
+                Nuestros valores fundamentales incluyen innovación, sostenibilidad y la excelencia en atención al cliente.
+            </p>
+            <p class="lead text-dark">
+                Trabajamos directamente con fabricantes reconocidos para garantizar productos de alta calidad a precios competitivos.
+                Con una logística ágil y eficiente, ofrecemos envíos rápidos y seguros a cualquier parte del país.
+            </p>
         </div>
     </section>
 
-    <!-- Subscribe Section -->
-    <section class="row" aria-labelledby="subscribeTitle">
-        <h2 id="subscribeTitle" class="text-center col-12 mb-4 text-white">¡Suscríbete para recibir actualizaciones!</h2>
-        <div class="col-md-10 col-lg-8 mx-auto text-center">
-            <form class="form-signup" id="contactForm">
-                <div class="row input-group-newsletter justify-content-center">
+
+    <!-- Sección de Contacto -->
+    <section id="contacto" class="py-5 bg-white text-center contact-section">
+        <h2 class="text-dark mb-4">Contacto</h2>
+        <div class="container">
+            <form>
+                <div class="row mb-3">
                     <div class="col-md-6">
-                        <input class="form-control" id="emailAddress" type="email" placeholder="Introduce tu correo electrónico..." aria-label="Correo electrónico" required />
+                        <input type="text" class="form-control form-control-lg" placeholder="Nombre" required />
                     </div>
-                    <div class="col-auto">
-                        <button class="btn btn-primary" id="submitButton" type="submit">¡Notificarme!</button>
+                    <div class="col-md-6">
+                        <input type="email" class="form-control form-control-lg" placeholder="Correo Electrónico" required />
                     </div>
                 </div>
+                <div class="mb-3">
+                    <textarea class="form-control form-control-lg" placeholder="Mensaje" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">Enviar</button>
             </form>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="row" aria-labelledby="contactTitle">
-        <h2 id="contactTitle" class="text-center col-12 mb-4 text-white">Contáctanos</h2>
-
-        <!-- Address -->
-        <div class="col-md-4 mb-4">
-            <div class="card py-4 h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-map-marked-alt text-primary mb-2"></i>
-                    <h4 class="text-uppercase m-0">Dirección</h4>
-                    <hr class="my-4 mx-auto" />
-                    <div class="small text-black-50">4923 Market Street, Orlando FL</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Email -->
-        <div class="col-md-4 mb-4">
-            <div class="card py-4 h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-envelope text-primary mb-2"></i>
-                    <h4 class="text-uppercase m-0">Correo</h4>
-                    <hr class="my-4 mx-auto" />
-                    <div class="small text-black-50"><a href="mailto:hello@yourdomain.com">hello@yourdomain.com</a></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Phone -->
-        <div class="col-md-4 mb-4">
-            <div class="card py-4 h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-mobile-alt text-primary mb-2"></i>
-                    <h4 class="text-uppercase m-0">Teléfono</h4>
-                    <hr class="my-4 mx-auto" />
-                    <div class="small text-black-50">+1 (555) 902-8832</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Social Links -->
-        <div class="social d-flex justify-content-center col-12 mb-4">
-            <a class="mx-2" href="#!"><i class="fab fa-twitter"></i></a>
-            <a class="mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
-            <a class="mx-2" href="#!"><i class="fab fa-github"></i></a>
         </div>
     </section>
 </main>
 
+<link rel="stylesheet" href="~/css/index.css">
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
