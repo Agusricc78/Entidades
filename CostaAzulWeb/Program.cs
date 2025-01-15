@@ -1,4 +1,5 @@
 using BusinessLogicLayer;
+using CostaAzulWeb.Filtros;
 using Entities;
 using Microsoft.AspNetCore.HttpOverrides;
 
@@ -9,6 +10,15 @@ builder.Services.AddControllersWithViews();
 
 // Configuración para usar memoria distribuida (requerido para sesiones)
 builder.Services.AddDistributedMemoryCache();
+
+// Registrar el filtro global
+builder.Services.AddScoped<LoginStatusFilter>(); // Esto es necesario para registrar el filtro en el contenedor de dependencias.
+
+builder.Services.AddControllersWithViews(options =>
+{
+    // Registrar el filtro en todas las acciones globalmente
+    options.Filters.AddService<LoginStatusFilter>();
+});
 
 // Configuración de sesiones
 builder.Services.AddSession(options =>
@@ -28,10 +38,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/AccessDenied";     // Ruta si el usuario no tiene permisos
 });
 
-builder.Services.AddHttpContextAccessor();
-// Requerido para acceder a HttpContext en servicios o controladores
-
-// Registro de dependencias
+// Registrar los servicios necesarios para la aplicación
 builder.Services.AddScoped<BLL_Login>(); // Registro de la clase BLL_Login
 builder.Services.AddScoped<BLL_Productos>(); // Registro de la clase BLL_Productos
 builder.Services.AddScoped<BLL_Categorias>(); // Registro de la clase BLL_Categorias
@@ -42,6 +49,8 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
     options.KnownProxies.Clear(); // Opcional, especificar proxies conocidos si aplica
 });
+
+builder.Services.AddHttpContextAccessor(); // Requerido para acceder a HttpContext en servicios o controladores
 
 var app = builder.Build();
 
@@ -61,8 +70,7 @@ app.UseForwardedHeaders();
 app.UseRouting();           // Configurar el enrutamiento
 
 app.UseSession();           // Habilitar el middleware de sesión
-app.UseAuthorization();
-// Habilitar autorización
+app.UseAuthorization();     // Habilitar autorización
 
 // Configuración de rutas
 app.MapControllerRoute(

@@ -1,34 +1,42 @@
-﻿@model CostaAzulWeb.Models.CarritoViewModel
+﻿@{
+    ViewBag.Title = "Carrito";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-<div class="min-h-screen bg-blue-50 p-10">
-    <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Carrito de Compras</h1>
-    <table class="table-auto w-full border-collapse border border-blue-400">
+
+@model CostaAzulWeb.Models.CarritoViewModel
+
+<div class="min-h-screen bg-white p-10 rounded-lg shadow-md">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Carrito de Compras</h1>
+    <table class="table-auto w-3/4 mx-auto border-collapse border border-gray-300 bg-white rounded-lg shadow">
         <thead>
-            <tr class="bg-blue-100">
-                <th class="border border-blue-400 px-4 py-2">Imagen</th>
-                <th class="border border-blue-400 px-4 py-2">Descripción</th>
-                <th class="border border-blue-400 px-4 py-2">Precio Unitario</th>
-                <th class="border border-blue-400 px-4 py-2">Cantidad</th>
-                <th class="border border-blue-400 px-4 py-2">Código</th>
-                <th class="border border-blue-400 px-4 py-2">Acciones</th>
+            <tr class="bg-gray-100">
+                <th class="border border-gray-300 px-4 py-2">Imagen</th>
+                <th class="border border-gray-300 px-4 py-2">Descripción</th>
+                <th class="border border-gray-300 px-4 py-2">Precio Unitario</th>
+                <th class="border border-gray-300 px-4 py-2">Cantidad</th>
+                <th class="border border-gray-300 px-4 py-2">Código</th>
+                <th class="border border-gray-300 px-4 py-2">Acciones</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var producto in Model.Productos)
             {
-                <tr>
-                    <td class="border border-blue-400 px-4 py-2">
-                        <img src="~/Img/@producto.Imagen" alt="@producto.Descripcion" class="w-16 h-16 object-cover mx-auto">
+                <tr class="hover:bg-gray-50 transition duration-300">
+                    <td class="border border-gray-300 px-4 py-2 text-center">
+                        <img src="~/Img/@producto.Imagen" alt="@producto.Descripcion" class="product-image hover:scale-110 transition-transform duration-300">
                     </td>
-                    <td class="border border-blue-400 px-4 py-2">@producto.Descripcion</td>
-                    <td class="border border-blue-400 px-4 py-2">$@producto.Precio</td>
-                    <td class="border border-blue-400 px-4 py-2">@producto.cant</td>
-                    <td class="border border-blue-400 px-4 py-2">@producto.Cod_Producto</td>
-                    <td class="border border-blue-400 px-4 py-2">
+                    <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.Descripcion</td>
+                    <td class="border border-gray-300 px-4 py-2 text-gray-800">$@producto.Precio</td>
+                    <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.cant</td>
+                    <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.Cod_Producto</td>
+                    <td class="border border-gray-300 px-4 py-2 text-center">
                         <form method="post" asp-action="EliminarProducto" asp-controller="Carrito">
                             <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
                             <input type="hidden" name="Id_Carrito" value="@Model.Id_Carrito" />
-                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Eliminar</button>
+                            <button type="submit" class="delete-btn" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -37,11 +45,14 @@
     </table>
 
     <div class="mt-6 text-right">
-        <p class="text-lg">Subtotal: <strong>$@Model.Subtotal</strong></p>
-        <p class="text-lg">Total: <strong>$@Model.Total</strong></p>
+        <p class="text-lg text-gray-800">Subtotal: <strong>$@Model.Subtotal</strong></p>
+        <p class="text-lg text-gray-800">Total: <strong>$@Model.Total</strong></p>
 
         <form method="post" asp-action="FinalizarCompra" asp-controller="Carrito" class="inline-block">
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">Finalizar Compra</button>
+            <button type="submit" class="btn-primary">Finalizar Compra</button>
         </form>
     </div>
 </div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/css/carrito.css">

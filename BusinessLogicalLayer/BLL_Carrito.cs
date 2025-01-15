@@ -34,5 +34,17 @@ namespace BusinessLogicalLayer
 
         }
 
+        public int Finalizar(CarritoModel cm)
+        {
+            return mp.FinalizarCompra(cm);
+        }
+
+        public int CantProductos(string Ip_Cliente)
+        {
+            return mp.CantProductos(Ip_Cliente);
+        }
+
+
+
     }
 }

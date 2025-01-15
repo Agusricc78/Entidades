@@ -1,73 +1,98 @@
-﻿@{
+﻿@model CostaAzulWeb.Models.CarritoViewModel;
+@{
     ViewBag.Title = "Finalizar Compra";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="min-h-screen bg-blue-50 p-10">
     <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Finalizar Compra</h1>
+    <form id="facturarForm" method="post">
+        <input type="hidden" name="Id_Carrito" value="@Model.Id_Carrito" />
 
-    <form asp-action="ConfirmarCompra" method="post" class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <!-- Nombre y Apellido -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="grid grid-cols-2 gap-4">
             <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input type="text" id="nombre" name="nombre" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
+                <label for="Nombre" class="block font-bold">Nombre</label>
+                <input type="text" id="Nombre" name="Nombre" class="form-input w-full" required />
             </div>
             <div>
-                <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido</label>
-                <input type="text" id="apellido" name="apellido" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
+                <label for="Apellido" class="block font-bold">Apellido</label>
+                <input type="text" id="Apellido" name="Apellido" class="form-input w-full" required />
+            </div>
+            <div>
+                <label for="Mail" class="block font-bold">Correo Electrónico</label>
+                <input type="email" id="Mail" name="Mail" class="form-input w-full" required />
+            </div>
+            <div>
+                <label for="Telefono" class="block font-bold">Teléfono</label>
+                <input type="text" id="Telefono" name="Telefono" class="form-input w-full" required />
+            </div>
+            <div>
+                <label for="FormaPago" class="block font-bold">Forma de Pago</label>
+                <select id="FormaPago" name="FormaPago" class="form-select w-full" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
+                </select>
+            </div>
+            <div>
+                <label for="FormaEntrega" class="block font-bold">Forma de Entrega</label>
+                <select id="FormaEntrega" name="FormaEntrega" class="form-select w-full" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="Retiro">Retiro en Local</option>
+                    <option value="Envio">Envío</option>
+                </select>
             </div>
         </div>
 
-        <!-- Email y Teléfono -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-                <label for="mail" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                <input type="email" id="mail" name="mail" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
-            </div>
-            <div>
-                <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
-                <input type="tel" id="telefono" name="telefono" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
-            </div>
+        <div class="mt-6 text-right">
+            <button type="button" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600" onclick="irAPagar()">
+                Ir a Pagar
+            </button>
         </div>
-
-        <!-- Código Postal y Dirección -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-                <label for="codigoPostal" class="block text-sm font-medium text-gray-700">Código Postal</label>
-                <input type="text" id="codigoPostal" name="codigoPostal" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
-            </div>
-            <div>
-                <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
-                <input type="text" id="direccion" name="direccion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
-            </div>
-        </div>
-
-        <!-- Forma de Pago -->
-        <div class="mb-4">
-            <label for="formaPago" class="block text-sm font-medium text-gray-700">Forma de Pago</label>
-            <select id="formaPago" name="formaPago" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
-                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
-                <option value="Tarjeta de Débito">Tarjeta de Débito</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="MercadoPago">MercadoPago</option>
-            </select>
-        </div>
-
-        <!-- Forma de Entrega -->
-        <div class="mb-4">
-            <label for="formaEntrega" class="block text-sm font-medium text-gray-700">Forma de Entrega</label>
-            <select id="formaEntrega" name="formaEntrega" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
-                <option value="Envio">Envío</option>
-                <option value="Retiro en Local">Retiro en Local</option>
-            </select>
-        </div>
-
-        <!-- Botón de Confirmar Compra -->
-        <div class="text-center mt-6">
-            <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
-                Pagar
+        <div class="mt-6 text-right">
+            <button type="button" class="bg-green-500 text-black px-6 py-2 rounded hover:bg-green-600" onclick="descargarFactura()">
+                Finalizar
             </button>
         </div>
     </form>
 </div>
 
+<link rel="stylesheet" href="~/css/Finalizar.css">
+
+<script>
+    // Función para enviar el formulario al método de facturación y mostrar el explorador de archivos
+      function descargarFactura() {
+        const form = document.getElementById("facturarForm");
+        const formData = new FormData(form);
+
+        fetch('@Url.Action("Facturar", "Carrito")', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error al generar la factura");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.style.display = "none";
+            a.href = url;
+            a.download = "Factura.pdf"; // Nombre sugerido
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            alert("Error al generar la factura: " + error.message);
+        });
+    }
+
+    // Simulación de función para ir a pagar (puedes personalizarlo)
+    function irAPagar() {
+        alert("Función de pago no implementada");
+    }
+</script>

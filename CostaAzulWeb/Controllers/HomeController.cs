@@ -7,13 +7,14 @@ using BusinessLogicLayer;
 
 namespace CostaAzulWeb.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : Controller 
     {
         private readonly BLL_Login log;
 
         public HomeController()
         {
             log = new BLL_Login();
+            
         }
 
 
@@ -91,11 +92,20 @@ namespace CostaAzulWeb.Controllers
 
 
         public ActionResult Contact()
-
         {
-
-
             return View();
         }
+
+        [HttpGet]
+        public IActionResult RenderNavbar()
+        {
+            // Verifica el estado de login desde la sesión
+            ViewBag.IsLoggedIn = HttpContext.Session.GetString("IsLoggedIn") == "true";
+            ViewBag.UserId = HttpContext.Session.GetInt32("UserId"); // Si tienes el UserId en sesión
+            return PartialView("_NavbarPartial");
+        }
+
+
+
     }
 }

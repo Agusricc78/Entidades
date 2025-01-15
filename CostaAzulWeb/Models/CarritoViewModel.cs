@@ -17,7 +17,15 @@ namespace CostaAzulWeb.Models
         public decimal Total { get; set; } // Total acumulado
         public List<Productos> Productos { get; set; } // Lista de productos en el carrito
 
-        public int CantidadProd { get; set; }
+        public string Direccion { get; set; }
+        public string? Nombre { get; set; } // Nombre del cliente
+        public string? Apellido { get; set; } // Apellido del cliente
+        public string? Mail { get; set; } // Correo electrónico
+        public string? Telefono { get; set; } // Teléfono
+        public string? FormaPago { get; set; } // Forma de pago
+        public string? FormaEntrega { get; set; }
+
+
 
 
 

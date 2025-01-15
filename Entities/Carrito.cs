@@ -20,6 +20,10 @@ namespace Entities
 
         public List<Productos> lista { get; set; }
 
+    
+
+
+
 
     }
 }

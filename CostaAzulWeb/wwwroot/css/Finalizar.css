@@ -1,0 +1,31 @@
+﻿body {
+    background-color: rgba(173, 216, 230, 0.3);
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #0056b3;
+}
+
+label {
+    color: #333;
+}
+
+.form-input, .form-select {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 5px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+}
+
+button {
+    transition: all 0.3s ease;
+}
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+
 namespace DataAccesLayer.Mappers
 {
     public class MP_Carrito
@@ -46,7 +47,7 @@ namespace DataAccesLayer.Mappers
                 Ip_Cliente = dt.Rows[0]["Ip_Cliente"].ToString(),
                 Subtotal = Convert.ToDecimal(dt.Rows[0]["Subtotal"]),
                 Total = Convert.ToDecimal(dt.Rows[0]["Total"]),
-               
+
                 lista = new List<Productos>()
             };
 
@@ -56,7 +57,7 @@ namespace DataAccesLayer.Mappers
                 var producto = new Productos
                 {
                     Id_Producto = Convert.ToInt32(row["Id_Producto"]),
-                    
+
                     Descripcion = row["Descripcion"].ToString(),
                     Precio = Convert.ToDecimal(row["Precio"]),
                     Cod_Producto = row["Cod_Producto"].ToString(),
@@ -94,5 +95,37 @@ namespace DataAccesLayer.Mappers
 
         }
 
+
+        public int FinalizarCompra(CarritoModel carrito)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+        new SqlParameter("@Id_Carrito", carrito.Id_Carrito),
+        new SqlParameter("@Nombre", carrito.Nombre ?? (object)DBNull.Value),
+        new SqlParameter("@Apellido", carrito.Apellido ?? (object)DBNull.Value),
+        new SqlParameter("@Mail", carrito.Mail ?? (object)DBNull.Value),
+        new SqlParameter("@Telefono", carrito.Telefono ?? (object)DBNull.Value),
+        new SqlParameter("@FormaPago", carrito.FormaPago ?? (object)DBNull.Value),
+        new SqlParameter("@FormaEntrega", carrito.FormaEntrega ?? (object)DBNull.Value)
+            };
+
+            return cs.Escribir("FinalizarCompra", parametros);
+        }
+
+
+        public int CantProductos(string Ip_Cliente)
+        {
+            string storeProc = "ProductosCarrito";
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@Ip_Cliente", Ip_Cliente),
+            };
+
+            object resultado = cs.ObetenerDatos("sp_ContarProductosCarrito", parametros);
+
+            return resultado != null ? Convert.ToInt32(resultado) : 0; //
+
+
+        }
     }
 }

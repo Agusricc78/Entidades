@@ -26,6 +26,7 @@ namespace CostaAzulWeb.Controllers
             _cat = new BLL_Categorias();
             catalogo = new BusinessLogicalLayer.BLL_Catalogos();
             linea = new BusinessLogicalLayer.BLL_Lineas();
+           
         }
 
         [HttpGet]
