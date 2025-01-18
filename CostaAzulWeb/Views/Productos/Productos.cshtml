@@ -157,6 +157,39 @@ else
     <p>No hay productos disponibles.</p>
 }
 
+<div class="container mt-4">
+    <h2 class="mb-3">Gestión de Carritos</h2>
+
+    <!-- Selector de estado -->
+    <div class="mb-3">
+        <label for="estadoSelect" class="form-label">Seleccionar estado:</label>
+        <select id="estadoSelect" class="form-select">
+            <option value="">Todos</option>
+            <option value="Finalizado">Finalizado</option>
+            <option value="Retirado">Retirado</option>
+        </select>
+        <button id="filtrarCarritos" class="btn btn-primary mt-2">Filtrar</button>
+    </div>
+
+    <!-- Tabla de Carritos -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Num de Pedido</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Forma de Entrega</th>
+                <th>Forma de Pago</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody id="listaCarritos">
+            <!-- Los carritos serán renderizados aquí -->
+        </tbody>
+    </table>
+</div>
+
+
 @section Scripts {
     <script src="~/js/site.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -184,5 +217,112 @@ else
             });
         });
     </script>
+    <script>
+            $(document).ready(function () 
+            {
+
+            // Cargar todos los carritos al inicio
+            obtenerCarritos();
+
+            // Evento para filtrar carritos
+            $('#filtrarCarritos').on('click', function () {
+                const estado = $('#estadoSelect').val(); // Obtener estado seleccionado
+                if (estado) {
+                    obtenerCarritosPorEstado(estado);
+                } else {
+                    obtenerCarritos(); // Cargar todos si no hay filtro
+                }
+            });
+
+            // Función para obtener todos los carritos al inicio
+            function obtenerCarritos() {
+                $.ajax({
+                    url: '/Carrito/GetCarritos', // Acción del controlador para obtener todos los carritos
+                    type: 'GET',
+                    success: function (response) {
+                        renderizarCarritos(response);
+                    },
+                    error: function () {
+                        alert('Error al obtener los carritos.');
+                    }
+                });
+            }
+
+            // Función para filtrar carritos por estado
+            function obtenerCarritosPorEstado(estado) {
+                $.ajax({
+                    url: '/Carrito/ObtenerCarritosPorEstado', // Acción del controlador para filtrar por estado
+                    type: 'GET',
+                    data: { estado: estado },
+                    success: function (response) {
+                        renderizarCarritos(response);
+                    },
+                    error: function () {
+                        alert('Error al filtrar los carritos.');
+                    }
+                });
+            }
+
+            // Función para renderizar los carritos y sus productos
+            function renderizarCarritos(carritos) {
+                $('#listaCarritos').empty(); // Limpiar la tabla
+
+                carritos.forEach((carrito) => {
+                    // Fila principal del carrito
+                    const carritoRow = `
+                        <tr>
+                            <td>${carrito.id_Carrito}</td>
+                            <td>${carrito.nombre} ${carrito.apellido}</td>
+                            <td>${carrito.total.toFixed(2)}</td>
+                            <td>${carrito.formaEntrega || 'N/A'}</td>
+                            <td>${carrito.formaPago || 'N/A'}</td>
+                            <td>${carrito.estado || 'N/A'}</td>
+                            <td>
+                                <button class="btn btn-info btn-toggle" data-carrito-id="${carrito.id_Carrito}">Ver Productos</button>
+                            </td>
+                        </tr>
+                    `;
+
+                    // Fila oculta con los productos
+                    const productosRow = `
+                        <tr class="productos-row" id="productos-${carrito.id_Carrito}" style="display: none;">
+                            <td colspan="6">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Total Producto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${carrito.productos.map(producto => `
+                                            <tr>
+                                                <td>${producto.cod_Producto}</td>
+                                                <td>${producto.cant}</td>
+                                                <td>${producto.precio.toFixed(2)}</td>
+                                                <td>${(producto.cant * producto.precio).toFixed(2)}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    `;
+
+                    $('#listaCarritos').append(carritoRow + productosRow);
+                });
+
+                // Evento para mostrar/ocultar productos
+                $('.btn-toggle').off('click').on('click', function () {
+                    const carritoId = $(this).data('carrito-id');
+                    $(`#productos-${carritoId}`).toggle();
+                });
+            }
+        });
+    </script>
+   
 }
+
 

@@ -19,7 +19,7 @@ namespace Entities
         public decimal Subtotal { get; set; } // Subtotal acumulado del carrito
         public decimal Total { get; set; } // Total acumulado
         public List<Productos> Productos { get; set; } // Lista de productos en el carrito
-
+        public string Estado { get; set; }
 
         public string Nombre { get; set; } // Nombre del cliente
         public string Apellido { get; set; } // Apellido del cliente

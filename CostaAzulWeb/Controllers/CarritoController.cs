@@ -236,6 +236,43 @@ namespace CostaAzulWeb.Controllers
         }
 
 
+        [HttpGet]
+        public JsonResult ObtenerCarritosPorEstado(string estado)
+        {
+            try
+            {
+                var carritos = car.ObtenerCarritos(estado);
+                // Método en la capa de servicio que utiliza los SP
+                return Json(carritos); // Devolver la lista de carritos en formato JSON
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al obtener los carritos." });
+            }
+        }
+
+
+        [HttpGet]
+        public JsonResult GetCarritos()
+        {
+            try
+            {
+                var carritos = car.GetCarritos();
+                // Método en la capa de servicio que utiliza los SP
+                return Json(carritos); // Devolver la lista de carritos en formato JSON
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al obtener los carritos." });
+            }
+        }
+
+
+
+
+
+
+
 
         public byte[] GenerarFactura(CarritoModel carrito)
         {

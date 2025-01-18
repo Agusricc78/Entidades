@@ -1,7 +1,9 @@
 ﻿using DataAccesLayer.Mappers;
+using DataAccessLayer;
 using Entities;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,6 +44,17 @@ namespace BusinessLogicalLayer
         public int CantProductos(string Ip_Cliente)
         {
             return mp.CantProductos(Ip_Cliente);
+        }
+
+       public List<CarritoModel> ObtenerCarritos(string estado)
+        {
+            return mp.ObtenerCarritosPorEstado(estado);
+        }
+
+
+        public List<CarritoModel> GetCarritos()
+        {
+            return mp.GetCarritos();
         }
 
 

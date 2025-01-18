@@ -48,7 +48,9 @@
                     @if (ViewBag.IsLoggedIn != null && ViewBag.IsLoggedIn && ViewBag.UserId == 1)
                     {
                         <li class="nav-item" id="gestionProductos" style="display: none;">
-                            <a class="nav-link" asp-controller="Productos" asp-action="Productos">Gestión de Productos</a>
+                            <a class="nav-link" asp-controller="Productos" asp-action="Productos">
+                                <img src="~/img/admin.png" alt="Gestión de Productos" style="width: 24px; height: 24px;" />
+                            </a>
                         </li>
                     }
                 </ul>

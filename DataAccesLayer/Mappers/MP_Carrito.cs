@@ -127,5 +127,158 @@ namespace DataAccesLayer.Mappers
 
 
         }
+
+
+        public DataTable PedidosFinalizados()
+        {
+
+
+
+            return cs.Leer("PedidosFinalizados");
+        }
+
+
+        public DataTable PedidosRetirados()
+        {
+            return cs.Leer("PedidosRetirados");
+        }
+
+
+
+        public List<CarritoModel> ObtenerCarritosPorEstado(string estado)
+        {
+            string storeProc = "sp_GetCarritosRetirados";
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+        new SqlParameter("@Estado", estado)
+            };
+
+            DataTable dt = cs.Leer(storeProc, parametros);
+
+            if (dt.Rows.Count == 0)
+            {
+                return null; // No hay carritos para el estado dado
+            }
+
+            // Lista de carritos
+            var carritos = new List<CarritoModel>();
+            var carritoDict = new Dictionary<int, CarritoModel>(); // Usar diccionario para evitar duplicados
+
+            // Iterar sobre cada fila para llenar los carritos
+            foreach (DataRow row in dt.Rows)
+            {
+                int idCarrito = Convert.ToInt32(row["Id_Carrito"]);
+
+                // Verificar si el carrito ya existe en el diccionario
+                if (!carritoDict.ContainsKey(idCarrito))
+                {
+                    // Crear una instancia del carrito
+                    var carrito = new CarritoModel
+                    {
+                        Id_Carrito = idCarrito,
+                        Ip_Cliente = row["Ip_Cliente"].ToString(),
+                        Subtotal = Convert.ToDecimal(row["Subtotal"]),
+                        Total = Convert.ToDecimal(row["Total"]),
+                        Nombre = row["Nombre_Cliente"].ToString(),
+                        Apellido = row["Apellido_Cliente"].ToString(),
+                        Mail = row["Mail_Cliente"].ToString(),
+                        Telefono = row["Telefono_Cliente"].ToString(),
+                        FormaPago = row["Forma_Pago"].ToString(),
+                        FormaEntrega = row["Forma_Entrega"].ToString(),
+                        Estado = row["Estado"].ToString(),
+                        Productos = new List<Productos>() // Inicializar lista de productos
+                    };
+
+                    carritoDict[idCarrito] = carrito; // Agregar al diccionario
+                }
+
+                // Agregar productos al carrito
+                var producto = new Productos
+                {
+                    Id_Producto = Convert.ToInt32(row["Id_Producto"]),
+                    Precio = Convert.ToDecimal(row["Precio"]),
+                    Cod_Producto = row["Cod_Producto"].ToString(),
+                    Imagen = row["Imagen"].ToString(),
+                    cant = Convert.ToInt32(row["Cantidad"].ToString()),
+                };
+
+                carritoDict[idCarrito].Productos.Add(producto);
+            }
+
+            // Convertir el diccionario a lista
+            carritos = carritoDict.Values.ToList();
+
+            return carritos;
+        }
+
+
+        public List<CarritoModel> GetCarritos()
+        {
+            string storeProc = "GetCarritos";
+
+            // Ejecutar el procedimiento almacenado sin parámetros
+            DataTable dt = cs.Leer(storeProc);
+
+            if (dt.Rows.Count == 0)
+            {
+                return new List<CarritoModel>(); // Retornar una lista vacía si no hay resultados
+            }
+
+            // Lista de carritos a retornar
+            var carritos = new List<CarritoModel>();
+            var carritoDict = new Dictionary<int, CarritoModel>(); // Diccionario para evitar duplicados
+
+            // Recorrer cada fila de la tabla
+            foreach (DataRow row in dt.Rows)
+            {
+                int idCarrito = Convert.ToInt32(row["Id_Carrito"]);
+
+                // Verificar si el carrito ya existe en el diccionario
+                if (!carritoDict.ContainsKey(idCarrito))
+                {
+                    // Crear y agregar un nuevo carrito
+                    var carrito = new CarritoModel
+                    {
+                        Id_Carrito = idCarrito,
+                        Ip_Cliente = row["Ip_Cliente"].ToString(),
+                        Subtotal = Convert.ToDecimal(row["Subtotal"]),
+                        Total = Convert.ToDecimal(row["Total"]),
+                        Nombre = row["Nombre_Cliente"].ToString(),
+                        Apellido = row["Apellido_Cliente"].ToString(),
+                        Mail = row["Mail_Cliente"].ToString(),
+                        Telefono = row["Telefono_Cliente"].ToString(),
+                        FormaPago = row["Forma_Pago"].ToString(),
+                        FormaEntrega = row["Forma_Entrega"].ToString(),
+                        Estado  = row["Estado"].ToString(),
+                        Productos = new List<Productos>() // Inicializar lista de productos
+                    };
+
+                    carritoDict[idCarrito] = carrito; // Agregar al diccionario
+                }
+
+                // Crear un producto y agregarlo a la lista de productos del carrito
+                var producto = new Productos
+                {
+                    Id_Producto = Convert.ToInt32(row["Id_Producto"]),
+                    Precio = Convert.ToDecimal(row["Precio"]),
+                    Imagen = row["Imagen"].ToString(),
+                    cant = Convert.ToInt32(row["Cantidad"])
+                };
+
+                carritoDict[idCarrito].Productos.Add(producto);
+            }
+
+            // Convertir el diccionario a una lista y retornarla
+            carritos = carritoDict.Values.ToList();
+            return carritos;
+        }
+
+
+
+
+
+
+
     }
 }

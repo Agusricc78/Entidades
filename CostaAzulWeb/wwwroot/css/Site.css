@@ -13004,3 +13004,38 @@ navbar-nav .nav-link {
     .navbar-toggler:hover {
         background-color: #495057;
     }
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #333;
+}
+
+.form-select {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+/* Estilo para las filas de productos ocultas */
+.productos-row {
+    background-color: #f9f9f9;
+}
+
+    .productos-row td {
+        padding: 10px;
+    }
+
+.btn-toggle {
+    cursor: pointer;
+}
