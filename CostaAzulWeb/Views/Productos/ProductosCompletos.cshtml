@@ -67,22 +67,67 @@
         {
             <div class="col-md-3 mb-4">
                 <div class="card">
-                    <img class="card-img-top" src="~/Img/@producto.Imagen" alt="@producto.NombreLinea">
+                    <img class="card-img-top" src="~/Img/@producto.Imagen" alt="@producto.NombreLinea" style="height: 200px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">@producto.Cod_Producto</h5>
                         <p class="card-text">@producto.Descripcion</p>
                         <p class="card-text"><strong>Precio:</strong> $@producto.Precio</p>
-                        <form asp-action="AgregarProducto" asp-controller="Carrito" method="post">
-                            <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
-                            <button type="submit" class="btn btn-primary">Agregar al Carrito</button>
+
+                        <form asp-action="AgregarProducto" asp-controller="Carrito" method="post" class="d-flex flex-column align-items-center">
+                            @if (producto.stock > 0)
+                            {
+                                <div class="d-flex justify-content-center align-items-center mb-2">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm me-2 btn-minus" data-stock="@producto.stock" data-id="@producto.Id_Producto">-</button>
+                                    <input type="number" name="Cantidad" id="cantidad-@producto.Id_Producto" class="form-control text-center" value="1" min="1" max="@producto.stock" style="width: 60px;" readonly />
+                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2 btn-plus" data-stock="@producto.stock" data-id="@producto.Id_Producto">+</button>
+                                </div>
+                                <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
+                                <button type="submit" class="btn btn-primary w-100">Agregar al Carrito</button>
+                            }
+                            else
+                            {
+                                <input class="btn btn-danger w-100" value="Agotado" readonly />
+                            }
                         </form>
                     </div>
                 </div>
             </div>
         }
     </div>
-</div>
+
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="~/css/productos.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7MQl2GE8lEfFNvN5JLPf42VhK3z1kJ8t4lF" crossorigin="anonymous"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Evento para aumentar la cantidad
+            document.querySelectorAll(".btn-plus").forEach(button => {
+                button.addEventListener("click", function () {
+                    const productoId = this.dataset.id;
+                    const stock = parseInt(this.dataset.stock, 10);
+                    const cantidadInput = document.getElementById(`cantidad-${productoId}`);
+                    let cantidadActual = parseInt(cantidadInput.value, 10);
+
+                    if (cantidadActual < stock) {
+                        cantidadInput.value = cantidadActual + 1;
+                    }
+                });
+            });
+
+            // Evento para disminuir la cantidad
+            document.querySelectorAll(".btn-minus").forEach(button => {
+                button.addEventListener("click", function () {
+                    const productoId = this.dataset.id;
+                    const cantidadInput = document.getElementById(`cantidad-${productoId}`);
+                    let cantidadActual = parseInt(cantidadInput.value, 10);
+
+                    if (cantidadActual > 1) {
+                        cantidadInput.value = cantidadActual - 1;
+                    }
+                });
+            });
+        });
+    </script>

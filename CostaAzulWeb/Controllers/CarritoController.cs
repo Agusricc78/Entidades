@@ -28,7 +28,7 @@ namespace CostaAzulWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult AgregarProducto(int Id_Producto)
+        public IActionResult AgregarProducto(int Id_Producto, int Cantidad)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace CostaAzulWeb.Controllers
                 {
                     ipUsuario = "192.168.1.100"; // Reemplázalo con una IP de ejemplo
                 }
-                car.AgregarProductoCarrito(Id_Producto, ipUsuario);
+                car.AgregarProductoCarrito(Id_Producto, ipUsuario,Cantidad);
                 TempData["Message"] = "El producto fue agregado al carrito correctamente.";
                 return RedirectToAction("Lista", "Productos");
             }
@@ -109,11 +109,11 @@ namespace CostaAzulWeb.Controllers
 
 
         [HttpPost]
-        public IActionResult EliminarProducto(int Id_Producto, int Id_Carrito)
+        public IActionResult EliminarProducto(int Id_Producto, int Id_Carrito,int Cantidad)
         {
             try
             {
-                car.EliminarProductoCarrito(Id_Producto, Id_Carrito);
+                car.EliminarProductoCarrito(Id_Producto, Id_Carrito,Cantidad);
 
                 TempData["Message"] = "El producto fue eliminado correctamente.";
 

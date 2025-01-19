@@ -89,6 +89,14 @@ namespace BusinessLogicLayer
         }
 
 
+        public List<Productos> MasVendidos()
+        {
+            return mp.ObtenerProductosMasVendidos();
+        }
+
+
+
+
 
 
 

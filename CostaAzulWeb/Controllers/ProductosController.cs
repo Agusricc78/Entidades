@@ -132,7 +132,7 @@ namespace CostaAzulWeb.Controllers
        
 
         [HttpPost]
-        public IActionResult Edit(ProductoViewModel model, IFormFile Imagen)
+        public IActionResult Edit(ProductoViewModel model, IFormFile Imag)
         {
             try
             {
@@ -144,19 +144,23 @@ namespace CostaAzulWeb.Controllers
                 ModelState.Remove(nameof(model.NombreCategoria));
                 ModelState.Remove(nameof(model.Categorias));
                 ModelState.Remove(nameof(model.Imagen));
-                ModelState.Remove(nameof(model.Id_Catalogo));
+                ModelState.Remove(nameof(model.CatalogosSelectList));
+                ModelState.Remove(nameof(model.Lineas));
+                ModelState.Remove(nameof(model.LineasSelectList));
+                ModelState.Remove(nameof(model.NombreLinea));
+                ModelState.Remove(nameof(model.Catalogos));
 
                 if (ModelState.IsValid)
                 {
                     // Guardar nueva imagen si se sube
-                    if (Imagen != null && Imagen.Length > 0)
+                    if (Imag != null && Imag.Length > 0)
                     {
-                        var fileName = Path.GetFileName(Imagen.FileName);
+                        var fileName = Path.GetFileName(Imag.FileName);
                         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Img", fileName);
 
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
-                            Imagen.CopyTo(stream);
+                            Imag.CopyTo(stream);
                         }
                         objeto.Imagen = fileName;
                     }
@@ -165,17 +169,19 @@ namespace CostaAzulWeb.Controllers
                     var prod = new Productos
                     {
                         Id_Producto = objeto.Id_Producto,
-                        Id_Linea = objeto.Id_Linea,
-                        Cod_Producto = objeto.Cod_Producto,
-                        Descripcion = objeto.Descripcion,
-                        Id_Categoria = objeto.Id_Categoria,
-                        Activo = objeto.Activo,
-                        Imagen = objeto.Imagen,
-                        Precio = objeto.Precio,
-                        stock = objeto.stock,
+                        Id_Linea = model.Id_Linea,
+                        Cod_Producto = model.Codigo,
+                        Descripcion = model.Descripcion,
+                        Id_Categoria = model.Id_Categoria,
+                        Activo = model.Activo,
+                        Imagen = Imag.FileName,
+                        Precio = model.Precio,
+                        stock = model.Stock,
+                        Id_Catalogo = model.Id_Catalogo,
+
                     };
 
-                    _pro.EditarProducto(objeto);
+                    _pro.EditarProducto(prod);
 
                     TempData["Message"] = "Producto actualizado correctamente.";
                     return RedirectToAction("Productos");
@@ -304,7 +310,19 @@ namespace CostaAzulWeb.Controllers
         }
 
 
-
+        [HttpGet]
+        public JsonResult GetProductosMasVendidos()
+        {
+            try
+            {
+                var productos = _pro.MasVendidos();
+                return Json(productos);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al obtener los productos más vendidos." });
+            }
+        }
 
 
 

@@ -28,12 +28,19 @@
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.Descripcion</td>
                     <td class="border border-gray-300 px-4 py-2 text-gray-800">$@producto.Precio</td>
-                    <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.cant</td>
+                    <td class="border border-gray-300 px-4 py-2 text-gray-800">
+                        <div class="flex items-center">
+                            <button type="button" class="btn-decrement bg-gray-200 px-2 py-1 text-gray-800 rounded-l" data-product-id="@producto.Id_Producto">-</button>
+                            <input type="number" class="product-quantity text-center w-12 border-gray-300" value="@producto.cant" min="1" max="@producto.stock" readonly />
+                            <button type="button" class="btn-increment bg-gray-200 px-2 py-1 text-gray-800 rounded-r" data-product-id="@producto.Id_Producto">+</button>
+                        </div>
+                    </td>
                     <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.Cod_Producto</td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
                         <form method="post" asp-action="EliminarProducto" asp-controller="Carrito">
                             <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
                             <input type="hidden" name="Id_Carrito" value="@Model.Id_Carrito" />
+                            <input type="hidden" name="Cantidad" class="cantidad-eliminar" value="@producto.cant" />
                             <button type="submit" class="delete-btn" title="Eliminar">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
@@ -56,3 +63,41 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="~/css/carrito.css">
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Evento para incrementar la cantidad
+        document.querySelectorAll(".btn-increment").forEach(button => {
+            button.addEventListener("click", function () {
+                const productId = this.dataset.productId;
+                const input = this.parentElement.querySelector(".product-quantity");
+                const max = parseInt(input.getAttribute("max"));
+                let value = parseInt(input.value);
+
+                if (value < max) {
+                    value++;
+                    input.value = value;
+                    // Actualizar el valor del campo oculto en el formulario
+                    this.closest("tr").querySelector(".cantidad-eliminar").value = value;
+                }
+            });
+        });
+
+        // Evento para decrementar la cantidad
+        document.querySelectorAll(".btn-decrement").forEach(button => {
+            button.addEventListener("click", function () {
+                const productId = this.dataset.productId;
+                const input = this.parentElement.querySelector(".product-quantity");
+                const min = parseInt(input.getAttribute("min"));
+                let value = parseInt(input.value);
+
+                if (value > min) {
+                    value--;
+                    input.value = value;
+                    // Actualizar el valor del campo oculto en el formulario
+                    this.closest("tr").querySelector(".cantidad-eliminar").value = value;
+                }
+            });
+        });
+    });
+</script>

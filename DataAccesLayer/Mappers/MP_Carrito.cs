@@ -72,24 +72,26 @@ namespace DataAccesLayer.Mappers
         }
 
 
-        public int AgregarProductos(int id_producto, string Ip_Cliente)
+        public int AgregarProductos(int id_producto, string Ip_Cliente,int cantidad)
         {
             SqlParameter[] parametros = new SqlParameter[]
             {
                new SqlParameter("@Id_Producto", id_producto),
                new SqlParameter("@Ip_Cliente", Ip_Cliente),
+               new SqlParameter("@Cantidad", cantidad),
             };
             return cs.Escribir("AgregarProductoConCarrito", parametros);
 
         }
 
 
-        public int EliminarProducto(int id_carrito, int id_prod)
+        public int EliminarProducto(int id_carrito, int id_prod, int cant)
         {
             SqlParameter[] parametros = new SqlParameter[]
             {
                new SqlParameter("@Id_Carrito", id_carrito),
                new SqlParameter("@Id_Producto", id_prod),
+               new SqlParameter("@Cantidad", cant),
             };
             return cs.Escribir("EliminarProductoDelCarrito", parametros);
 

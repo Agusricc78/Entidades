@@ -156,6 +156,28 @@ namespace DataAccessLayer.Mappers
             return cn.Leer("FiltrarProductos", parametros);
         }
 
+        public List<Productos> ObtenerProductosMasVendidos()
+        {
+            string storedProcedure = "sp_ProductosMasVendidos";
+            DataTable dt = cn.Leer(storedProcedure); // Asumiendo que cs es tu conexión de base de datos.
+
+            var productos = new List<Productos>();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                productos.Add(new Productos
+                {
+                    Id_Producto = Convert.ToInt32(row["Id_Producto"]),
+                    Descripcion = row["NombreProducto"].ToString(),
+                    Cod_Producto = row["Cod_Producto"].ToString(),
+                    Precio = Convert.ToDecimal(row["Precio"]),
+                    Imagen = row["Imagen"].ToString(),
+                   
+                });
+            }
+
+            return productos;
+        }
 
 
     }

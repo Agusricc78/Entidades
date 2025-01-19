@@ -20,14 +20,14 @@ namespace BusinessLogicalLayer
 
         }
 
-        public int AgregarProductoCarrito(int id_producto, string ip_cliente)
+        public int AgregarProductoCarrito(int id_producto, string ip_cliente, int cant)
         {
-            return mp.AgregarProductos(id_producto,ip_cliente);
+            return mp.AgregarProductos(id_producto,ip_cliente, cant);
         }
 
-        public int EliminarProductoCarrito(int idproducto, int id_carrito)
+        public int EliminarProductoCarrito(int idproducto, int id_carrito, int cant)
         {
-            return mp.EliminarProducto(id_carrito, idproducto);
+            return mp.EliminarProducto(id_carrito, idproducto, cant);
         }
 
         public Carrito VerCarrito(string Ip_Cliente)
