@@ -28,6 +28,7 @@ namespace DataAccessLayer.Mappers
              new SqlParameter("@Precio",pro.Precio),
              new SqlParameter("@Imagen",pro.Imagen),
              new SqlParameter("@Id_Catalogo",pro.Id_Catalogo),
+             new SqlParameter("@Electrico",pro.Electrico),
             };
             return cn.Escribir("AgregarProducto", parametros);
         }
@@ -98,6 +99,7 @@ namespace DataAccessLayer.Mappers
                     Descripcion = Convert.ToString(fila["Descripcion"]),
                     Imagen = Convert.ToString(fila["Imagen"]),
                     Id_Catalogo = Convert.ToInt32(fila["Id_Producto"]),
+                    Electrico = Convert.ToBoolean(fila["Electrico"])
 
                 };
                 return pro;
@@ -124,7 +126,8 @@ namespace DataAccessLayer.Mappers
              new SqlParameter("@Stock",pro.stock),
              new SqlParameter("@Precio",pro.Precio),
              new SqlParameter("@Imagen",pro.Imagen),
-             new SqlParameter("@Id_Catalogo",pro.Id_Catalogo)
+             new SqlParameter("@Id_Catalogo",pro.Id_Catalogo),
+              new SqlParameter("@Electrico",pro.Electrico),
 
             };
             return cn.Escribir("EditarProducto", parametros);
@@ -155,6 +158,20 @@ namespace DataAccessLayer.Mappers
 
             return cn.Leer("FiltrarProductos", parametros);
         }
+
+        public DataTable FiltrarElectricos(int? categoriaId, int? lineaId, string codigo)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+        new SqlParameter("@Id_Categoria", categoriaId ?? (object)DBNull.Value),
+        new SqlParameter("@Id_Linea", lineaId ?? (object)DBNull.Value),
+        new SqlParameter("@Cod_Producto", string.IsNullOrEmpty(codigo) ? (object)DBNull.Value : codigo)
+            };
+
+            return cn.Leer("FiltrarElectricos", parametros);
+        }
+
+
 
         public List<Productos> ObtenerProductosMasVendidos()
         {

@@ -17,6 +17,7 @@ namespace Entities
         public string Id_Categoria { get; set; }   
         public string NombreCategoria { get; set; }  
         public bool Activo { get; set; }
+        public bool Electrico{ get; set; }
         public string Imagen { get; set; }
         public int stock { get; set; }
 

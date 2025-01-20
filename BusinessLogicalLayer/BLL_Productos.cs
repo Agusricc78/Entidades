@@ -16,9 +16,7 @@ namespace BusinessLogicLayer
 
         public int AgregarProducto(Productos ps) 
         {
-            
-                return mp.AgregarProducto(ps);
-           
+          return mp.AgregarProducto(ps);
         }
 
         public int EliminarProducto(string id)
@@ -87,6 +85,22 @@ namespace BusinessLogicLayer
             return pro;
 
         }
+
+        public List<Productos> FiltrarElectricos(int? categoriaId, int? lineaId, string codigo = null)
+        {
+
+            DataTable dt = mp.FiltrarElectricos(categoriaId, lineaId, codigo);
+
+
+            List<Productos> pro = Helper.DataTableToList<Productos>(dt);
+
+
+            return pro;
+
+        }
+
+
+
 
 
         public List<Productos> MasVendidos()

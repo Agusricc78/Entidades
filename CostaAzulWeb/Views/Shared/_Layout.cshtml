@@ -38,6 +38,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#contacto">Contacto</a>
                     </li>
+                    <li class="nav-item">
+                        <form asp-controller="Productos" asp-action="Listas" method="get" class="d-inline">
+                            <button type="submit" class="btn btn-outline-light btn-hover">Materiales Electricos</button>
+                        </form>
+                    </li>
                     <!-- Carrito -->
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center" asp-controller="Carrito" asp-action="VerCarrito">

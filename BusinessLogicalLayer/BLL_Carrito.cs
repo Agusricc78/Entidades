@@ -25,9 +25,9 @@ namespace BusinessLogicalLayer
             return mp.AgregarProductos(id_producto,ip_cliente, cant);
         }
 
-        public int EliminarProductoCarrito(int idproducto, int id_carrito, int cant)
+        public int EliminarProductoCarrito(int idproducto, int id_carrito)
         {
-            return mp.EliminarProducto(id_carrito, idproducto, cant);
+            return mp.EliminarProducto(id_carrito, idproducto);
         }
 
         public Carrito VerCarrito(string Ip_Cliente)
@@ -57,7 +57,10 @@ namespace BusinessLogicalLayer
             return mp.GetCarritos();
         }
 
-
+        public int ActualizarCant(int idcarrito,int id,int cant)
+        {
+            return mp.ActualizarCant(idcarrito, id, cant);
+        }
 
     }
 }

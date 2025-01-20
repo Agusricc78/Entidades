@@ -63,7 +63,7 @@ namespace CostaAzulWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(ProductoViewModel producto, IFormFile Imagen)
+        public IActionResult Create(ProductoViewModel producto, IFormFile Imag)
         {
             try
             {
@@ -91,14 +91,14 @@ namespace CostaAzulWeb.Controllers
                     }
 
                     // Guardar imagen si se subió
-                    if (Imagen != null && Imagen.Length > 0)
+                    if (Imag != null && Imag.Length > 0)
                     {
-                        var fileName = Path.GetFileName(Imagen.FileName);
+                        var fileName = Path.GetFileName(Imag.FileName);
                         var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Img", fileName);
 
                         using (var stream = new FileStream(path, FileMode.Create))
                         {
-                            Imagen.CopyTo(stream);
+                            Imag.CopyTo(stream);
                         }
                         producto.Imagen = fileName;
                     }
@@ -112,9 +112,10 @@ namespace CostaAzulWeb.Controllers
                         Id_Categoria = producto.Id_Categoria,
                         Id_Catalogo = producto.Id_Catalogo,
                         Activo = producto.Activo,
-                        Imagen = producto.Imagen,
+                        Imagen = Imag.FileName,
                         Precio = producto.Precio,
                         stock = producto.Stock,
+                        Electrico = producto.Electrico,
                     };
 
                     _pro.AgregarProducto(prod);
@@ -178,6 +179,7 @@ namespace CostaAzulWeb.Controllers
                         Precio = model.Precio,
                         stock = model.Stock,
                         Id_Catalogo = model.Id_Catalogo,
+                        Electrico = model.Electrico,
 
                     };
 
@@ -308,6 +310,33 @@ namespace CostaAzulWeb.Controllers
                 return View(new ProductoViewModel { ListaProductos = new List<Productos>() });
             }
         }
+
+        [HttpGet]
+        public IActionResult Listas(int? categoriaId = null, int? lineaId = null, string codigo = null)
+        {
+            try
+            {
+                // Obtener los productos filtrados según los parámetros
+                var productos = _pro.FiltrarElectricos(categoriaId, lineaId, codigo);
+
+                // Preparar el modelo con las listas necesarias
+                var model = new ProductoViewModel
+                {
+                    ListaProductos = productos,
+                    Categorias = _cat.listarCat(), // Método para obtener categorías
+                    Lineas = linea.listarCat() // Método para obtener líneas
+                };
+
+                return View("MaterialesElectricos", model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = $"Error al cargar los productos: {ex.Message}";
+                return View(new ProductoViewModel { ListaProductos = new List<Productos>() });
+            }
+        }
+
+
 
 
         [HttpGet]

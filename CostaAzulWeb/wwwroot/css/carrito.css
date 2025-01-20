@@ -54,37 +54,56 @@ tbody td {
         transform: scale(1.1);
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
     }
-
-/* Botón de eliminar */
-.delete-btn {
-    background-color: transparent;
+.btn-delete {
+    background: linear-gradient(to bottom right, #dc3545, #c82333);
+    color: white;
     border: none;
-    font-size: 1.25rem;
-    color: var(--gray-800);
-    cursor: pointer;
-    transition: transform 0.3s, color 0.3s;
-}
-
-    .delete-btn:hover {
-        transform: scale(1.2);
-        color: var(--gray-300);
-    }
-
-/* Botón principal */
-.btn-primary {
-    background-color: var(--white);
-    color: var(--gray-800);
-    padding: 10px 20px;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    padding: 10px 14px;
     border-radius: 5px;
-    border: 1px solid var(--gray-300);
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-    .btn-primary:hover {
-        background-color: var(--button-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+
+.btn-delete:hover {
+    background: linear-gradient(to bottom right, #c82333, #a71d2a);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-delete i {
+    margin-right: 5px;
+}
+
+.btn-delete:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-update {
+    background: linear-gradient(to bottom right, #28a745, #218838);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    padding: 10px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .btn-update:hover {
+        background: linear-gradient(to bottom right, #218838, #1e7e34);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
     }
 
+    .btn-update i {
+        margin-right: 5px;
+    }
+
+    .btn-update:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }

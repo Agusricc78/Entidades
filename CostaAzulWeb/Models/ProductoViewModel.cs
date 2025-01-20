@@ -18,6 +18,8 @@ namespace CostaAzulWeb.Models
 
         public string Descripcion { get; set; }
 
+        public bool Electrico { get; set; }
+
         [Required(ErrorMessage = "El precio es obligatorio.")]
         [Range(0, double.MaxValue, ErrorMessage = "El precio debe ser un valor positivo.")]
         public decimal Precio { get; set; }

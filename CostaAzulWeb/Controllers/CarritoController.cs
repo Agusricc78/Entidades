@@ -49,8 +49,33 @@ namespace CostaAzulWeb.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult AgregarProductos(int Id_Producto, int Cantidad)
+        {
+            try
+            {
+                string ipUsuario = HttpContext.Connection.RemoteIpAddress?.ToString();
+                if (ipUsuario == "::1") // Detecta el loopback
+                {
+                    ipUsuario = "192.168.1.100"; // Reemplázalo con una IP de ejemplo
+                }
+                car.AgregarProductoCarrito(Id_Producto, ipUsuario, Cantidad);
+                TempData["Message"] = "El producto fue agregado al carrito correctamente.";
+                return RedirectToAction("Listas", "Productos");
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Error al agregar un producto al carrito" + ex.Message;
+                return View("Productos");
+            }
+        }
 
-        [HttpGet]
+
+
+
+
+      [HttpGet]
+
         public IActionResult VerCarrito()
         {
             try
@@ -109,11 +134,11 @@ namespace CostaAzulWeb.Controllers
 
 
         [HttpPost]
-        public IActionResult EliminarProducto(int Id_Producto, int Id_Carrito,int Cantidad)
+        public IActionResult EliminarProducto(int Id_Producto, int Id_Carrito)
         {
             try
             {
-                car.EliminarProductoCarrito(Id_Producto, Id_Carrito,Cantidad);
+                car.EliminarProductoCarrito(Id_Producto, Id_Carrito);
 
                 TempData["Message"] = "El producto fue eliminado correctamente.";
 
@@ -129,6 +154,33 @@ namespace CostaAzulWeb.Controllers
             }
 
         }
+
+
+        [HttpPost]
+        public IActionResult ActualizarCant(int Id_Producto, int Id_Carrito, int Cantidad)
+        {
+            try
+            {
+                car.ActualizarCant(Id_Carrito, Id_Producto, Cantidad);
+
+                TempData["Message"] = "La cantidad del producto fue actualizada con exito.";
+
+                return RedirectToAction("VerCarrito", "Carrito");
+
+
+
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "No se pudo eliminar el producto";
+                return RedirectToAction("VerCarrito", "Carrito");
+            }
+
+        }
+
+
+
+
 
 
 

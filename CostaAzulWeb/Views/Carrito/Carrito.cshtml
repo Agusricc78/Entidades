@@ -29,19 +29,26 @@
                     <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.Descripcion</td>
                     <td class="border border-gray-300 px-4 py-2 text-gray-800">$@producto.Precio</td>
                     <td class="border border-gray-300 px-4 py-2 text-gray-800">
-                        <div class="flex items-center">
-                            <button type="button" class="btn-decrement bg-gray-200 px-2 py-1 text-gray-800 rounded-l" data-product-id="@producto.Id_Producto">-</button>
-                            <input type="number" class="product-quantity text-center w-12 border-gray-300" value="@producto.cant" min="1" max="@producto.stock" readonly />
-                            <button type="button" class="btn-increment bg-gray-200 px-2 py-1 text-gray-800 rounded-r" data-product-id="@producto.Id_Producto">+</button>
+                        <div class="quantity-wrapper flex items-center justify-center">
+                            <button type="button" class="btn-decrement btn-quantity" data-id="@producto.Id_Producto" data-stock="@producto.stock">-</button>
+                            <input type="number" id="cantidad-@producto.Id_Producto" class="product-quantity text-center" value="@producto.cant" min="1" max="@producto.stock" readonly />
+                            <button type="button" class="btn-increment btn-quantity" data-id="@producto.Id_Producto" data-stock="@producto.stock">+</button>
                         </div>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-gray-800">@producto.Cod_Producto</td>
                     <td class="border border-gray-300 px-4 py-2 text-center">
-                        <form method="post" asp-action="EliminarProducto" asp-controller="Carrito">
+                        <form method="post" asp-action="ActualizarCant" asp-controller="Carrito">
                             <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
                             <input type="hidden" name="Id_Carrito" value="@Model.Id_Carrito" />
-                            <input type="hidden" name="Cantidad" class="cantidad-eliminar" value="@producto.cant" />
-                            <button type="submit" class="delete-btn" title="Eliminar">
+                            <input type="hidden" name="Cantidad" id="cantidad-oculta-@producto.Id_Producto" class="cantidad-eliminar" value="@producto.cant" />
+                            <button type="submit" class="btn-update mt-2" title="Actualizar">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </form>
+                        <form method="post" asp-action="EliminarProducto" asp-controller="Carrito" class="inline-block">
+                            <input type="hidden" name="Id_Producto" value="@producto.Id_Producto" />
+                            <input type="hidden" name="Id_Carrito" value="@Model.Id_Carrito" />
+                            <button type="submit" class="btn-delete mt-2" title="Eliminar">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
@@ -61,43 +68,86 @@
     </div>
 </div>
 
+
+<script src="~/js/carrito.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="~/css/carrito.css">
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // Evento para incrementar la cantidad
-        document.querySelectorAll(".btn-increment").forEach(button => {
-            button.addEventListener("click", function () {
-                const productId = this.dataset.productId;
-                const input = this.parentElement.querySelector(".product-quantity");
-                const max = parseInt(input.getAttribute("max"));
-                let value = parseInt(input.value);
+<style>
+    /* Botón sumar/restar cantidad */
+    .btn-quantity {
+        background: linear-gradient(to bottom right, #007bff, #0056b3);
+        color: white;
+        border: none;
+        font-size: 1.2rem;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-                if (value < max) {
-                    value++;
-                    input.value = value;
-                    // Actualizar el valor del campo oculto en el formulario
-                    this.closest("tr").querySelector(".cantidad-eliminar").value = value;
-                }
-            });
-        });
+        .btn-quantity:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
 
-        // Evento para decrementar la cantidad
-        document.querySelectorAll(".btn-decrement").forEach(button => {
-            button.addEventListener("click", function () {
-                const productId = this.dataset.productId;
-                const input = this.parentElement.querySelector(".product-quantity");
-                const min = parseInt(input.getAttribute("min"));
-                let value = parseInt(input.value);
+        .btn-quantity:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
-                if (value > min) {
-                    value--;
-                    input.value = value;
-                    // Actualizar el valor del campo oculto en el formulario
-                    this.closest("tr").querySelector(".cantidad-eliminar").value = value;
-                }
-            });
-        });
-    });
-</script>
+    /* Input de cantidad */
+    .product-quantity {
+        width: 60px;
+        height: 40px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: bold;
+        margin: 0 10px;
+        transition: border-color 0.2s ease-in-out;
+    }
+
+        .product-quantity:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+    /* Botón de actualización */
+    .btn-update {
+        background: linear-gradient(to bottom right, #28a745, #218838);
+        color: white;
+        border: none;
+        font-size: 1rem;
+        padding: 10px 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .btn-update:hover {
+            background: linear-gradient(to bottom right, #218838, #1e7e34);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-update i {
+            margin-right: 5px;
+        }
+
+        .btn-update:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+    /* General wrapper para cantidad */
+    .quantity-wrapper {
+        gap: 10px;
+    }
+</style>

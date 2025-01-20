@@ -85,13 +85,12 @@ namespace DataAccesLayer.Mappers
         }
 
 
-        public int EliminarProducto(int id_carrito, int id_prod, int cant)
+        public int EliminarProducto(int id_carrito, int id_prod)
         {
             SqlParameter[] parametros = new SqlParameter[]
             {
                new SqlParameter("@Id_Carrito", id_carrito),
                new SqlParameter("@Id_Producto", id_prod),
-               new SqlParameter("@Cantidad", cant),
             };
             return cs.Escribir("EliminarProductoDelCarrito", parametros);
 
@@ -277,7 +276,17 @@ namespace DataAccesLayer.Mappers
         }
 
 
+        public int ActualizarCant(int id_carrito, int id_prod, int cant)
+        {
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+               new SqlParameter("@Id_Carrito", id_carrito),
+               new SqlParameter("@Id_Producto", id_prod),
+               new SqlParameter("@Cantidad", cant),
+            };
+            return cs.Escribir("sp_ActualizarCantidad", parametros);
 
+        }
 
 
 
