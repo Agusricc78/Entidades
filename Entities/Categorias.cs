@@ -8,21 +8,10 @@ namespace Entities
 {
     public class Categorias
     {
-		private int id_Categoria;
+		public int Id_Categoria {  get; set; }
+		public string Nombre { get; set; }
 
-		public int Id_Categoria
-		{
-			get { return id_Categoria; }
-			set { id_Categoria = value; }
-		}
-
-		private string nombre;
-
-		public string Nombre
-		{
-			get { return nombre; }
-			set { nombre = value; }
-		}
+		public bool Activo {  get; set; }
 
 
 	}

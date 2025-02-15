@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using DataAccesLayer;
 using Entities;
 
-namespace BusinessLogicLayer
+namespace BusinessLogicalLayer
 {
     public class BLL_Login
     {
@@ -67,7 +67,10 @@ namespace BusinessLogicLayer
 
         }
 
-     
+        public DataTable GetAllUsers()
+        {
+            return _user.GetAllUsers();
+        }
 
 
         public bool ValidarExistencia(string nom,string correo)

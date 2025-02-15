@@ -1,0 +1,476 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Costa Azul</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Casa de Materiales Electricos e Iluminacion</p>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<section>
+    <div class="container-fluid px-5 my-5">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="row mb-3">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                Catalogos
+                            </div>
+                            <div id="contenedor_catalogo" class="card-body">
+                                <div id="contenedor_Linea" class="card-body">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="catalogos" value="0" id="cx0" checked="checked">
+                                        <label class="form-check-label" for="cx0">
+                                            Todos
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="catalogos" value="1" id="cx1">
+                                        <label class="form-check-label" for="cx1">
+                                            Ferrolux
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="catalogos" value="2" id="cx2">
+                                        <label class="form-check-label" for="cx2">
+                                            Rustica
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                Productos
+                            </div>
+                            <div id="contenedor_electricos" class="card-body">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="electricos" value="0" id="cx01" checked="checked">
+                                    <label class="form-check-label" for="cx01">
+                                        Todos
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="electricos" value="3" id="cx3">
+                                    <label class="form-check-label" for="cx3">
+                                        Electricos
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                Categorias
+                            </div>
+                            <div id="contenedor_categoria" class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                Lineas
+                            </div>
+                            <div id="contenedor_linea" class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row mb-3">
+                    <div class="col-sm-12">
+                        <div class="d-grid gap-2">
+                            <button id="btnAplicarFiltro" class="btn btn-outline-dark btn-block" type="button">
+                                <i class="fas fa-filter"></i>Aplicar Filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-sm-9">
+                <div class="mb-3">
+                    <h2 class="form-label">Buscar Productos</h2>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar productos...">
+                </div>
+
+
+                <div id="contenedor_producto" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            MostrarCategorias();
+            MostrarProductos(0, 0, 0, 0);
+
+            $("#searchInput").on("keyup", function () {
+                let filtro = $(this).val().toLowerCase();
+
+                $("#contenedor_producto .card").each(function () {
+                    let textoProducto = $(this).text().toLowerCase();
+
+                    if (textoProducto.includes(filtro)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+
+ 
+        function ExisteProductoEnCarrito(idProducto, callback = function () {}) {
+
+
+            $.ajax({
+                url: "@Url.Action("ExisteProductoCarrito", "Tienda")",
+                type: "POST",
+                data: JSON.stringify({ idproducto: idProducto }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+
+
+                    if (typeof callback === "function") {
+                        callback(response.respuesta > 0, response.cantidad || 0);
+                    } else {
+
+                    }
+                },
+                error: function () {
+
+                    if (typeof callback === "function") {
+                        callback(false, 0);
+                    }
+                }
+            });
+        }
+
+
+
+
+      function MostrarCategorias() {
+            jQuery.ajax({
+                url: "@Url.Action("GetCategorias", "Tienda")",
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#contenedor_categoria").html("");
+                    $("#contenedor_categoria").LoadingOverlay("hide");
+
+                    $("<div>").addClass("form-check form-switch").append(
+                        $("<input>").addClass("form-check-input").attr({ "type": "radio", "name": "categoria", "value": "0", "id": "Cx" }).prop("checked", true),
+                        $("<label>").addClass("form-check-label").text("Todos").attr({ "for": "Cx" })
+                    ).appendTo("#contenedor_categoria");
+
+                    $.each(response.data, function (i, element) {
+                        $("<div>").addClass("form-check form-switch").append(
+                            $("<input>").addClass("form-check-input").attr({ "type": "radio", "name": "categoria", "value": element.Id_Categoria, "id": "c" + i }),
+                            $("<label>").addClass("form-check-label").text(element.Nombre).attr({ "for": "c" + i })
+                        ).appendTo("#contenedor_categoria");
+                    });
+
+                    MostrarLineas();
+                },
+                beforeSend: function () {
+                    $("#contenedor_categoria").LoadingOverlay("show");
+                }
+            });
+        }
+
+        function MostrarLineas() {
+            var Id_Categoria = $("input[name=categoria]:checked").val();
+
+
+          jQuery.ajax({
+              url: "@Url.Action("GetLineasCategoria", "Tienda")",
+              type: "POST",
+              data: JSON.stringify({ Id_Categoria: Id_Categoria }),
+              dataType: "json",
+              contentType: "application/json; charset=utf-8",
+              success: function (response) {
+                  $("#contenedor_linea").html("");
+                  $("#contenedor_linea").LoadingOverlay("hide");
+
+                  $("<div>").addClass("form-check").append(
+                      $("<input>").addClass("form-check-input").attr({ "type": "radio", "name": "linea", "value": "0", "id": "lx" }).prop("checked", true),
+                      $("<label>").addClass("form-check-label").text("Todos").attr({ "for": "lx" })
+                  ).appendTo("#contenedor_linea");
+
+                  $.each(response.data, function (i, element) {
+                      $("<div>").addClass("form-check").append(
+                          $("<input>").addClass("form-check-input").attr({ "type": "radio", "name": "linea", "value": element.Id_Linea, "id": "l" + i }),
+                          $("<label>").addClass("form-check-label").text(element.Nombre).attr({ "for": "l" + i })
+                      ).appendTo("#contenedor_linea");
+                  });
+              },
+              beforeSend: function () {
+                  $("#contenedor_linea").LoadingOverlay("show");
+              }
+          });
+        }
+
+       function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico) {
+        jQuery.ajax({
+            url: '@Url.Action("getProductos", "Tienda")',
+            type: "POST",
+            data: JSON.stringify({ Id_Categoria: Id_Categoria, Id_Linea: Id_Linea, Id_Catalogo: Id_Catalogo, Elecrico: Elecrico }),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                $("#contenedor_producto").html("");
+                $("#contenedor_producto").LoadingOverlay("hide");
+
+                $.each(response.data, function (i, element) {
+
+
+                    let idProducto = element.Id_Producto;
+                    let cardFooter = $("<div>").addClass("card-footer pt-0 border-top-0 bg-transparent");
+
+                    ExisteProductoEnCarrito(element.Id_Producto, function (enCarrito, cantidad) {
+  
+                     cardFooter.empty();
+
+                    if (element.stock > 0) {
+
+                        if (enCarrito) {
+                            let botonesContainer = $("<div>").addClass("d-flex justify-content-center align-items-center gap-2");
+
+                            botonesContainer.append(
+                                $("<button>").addClass("btn btn-outline-danger btn-restar rounded-0")
+                                    .append($("<i>").addClass("fas fa-minus"))
+                                    .data("Id_Producto", element.Id_Producto),
+
+                                $("<input>").addClass("form-control input-cantidad text-center rounded-0")
+                                    .prop("disabled", true)
+                                    .attr("id", "cantidad_" + element.Id_Producto) 
+                                    .attr("name", "cantidad_" + element.Id_Producto) 
+                                    .css({ "width": "50px" }) 
+                                    .data("producto", element)
+                                    .val(cantidad),
+
+                                $("<button>").addClass("btn btn-outline-primary btn-sumar rounded-0")
+                                    .append($("<i>").addClass("fas fa-plus"))
+                                    .data("Id_Producto", element.Id_Producto)
+                            );
+
+                            // Añadir al `cardFooter`
+                            cardFooter.append(botonesContainer);
+                        } else {
+                            // Si el producto NO está en el carrito, mostrar "Agregar al carrito"
+                            cardFooter.append(
+                                $("<button>").addClass("btn btn-success mt-auto agregarcarrito ")
+                                    .css("margin-right", "10px")
+                                    .data("Id_Producto", element.Id_Producto)
+                                    .text("Agregar al carrito"),
+
+                                $("<a>").addClass("btn btn-dark mt-auto")
+                                    .attr({ "href": "@Url.Action("DetalleProducto", "Tienda")?Id_Producto=" + element.Id_Producto })
+                                    .text("Ver Detalle")
+                            );
+                        }
+                    } else {
+                        // Si no hay stock, solo mostramos "Consultar"
+                        cardFooter.append(
+                            $("<button>").addClass("btn btn-light mt-auto w-100").text("Consultar")
+                        );
+                    }
+
+                });
+
+                    let productCard = $("<div>").addClass("col-12 col-md-6 mb-5").append(
+                        $("<div>").addClass("card h-100").append(
+                            $("<img>").addClass("card-img-top")
+                                .attr("src", element.Imagen ? "data:image/" + element.ExtImagen + ";base64," + element.Imagen : "URL_DE_IMAGEN_POR_DEFECTO"),
+                            $("<div>").addClass("card-body p-4").append(
+                                $("<div>").addClass("text-center").append(
+                                    $("<h5>").addClass("fw-bolder").text(element.Nombre),
+                                    $("<p>").text("$" + element.Precio.toFixed(2))
+                                )
+                            ),
+                            $("<div>").addClass("text-center").append(
+                                (element.stock <= 0 ? $("<p>").addClass("text-danger fw-bold").text("¡Agotado!") : ""),
+                            ),
+                            $("<div>").addClass("d-grid gap-2").append(cardFooter)
+                        )
+                    );
+
+                    productCard.appendTo("#contenedor_producto");
+
+                    ExisteProductoEnCarrito(idProducto);
+                });
+            },
+            beforeSend: function () {
+                $("#contenedor_producto").LoadingOverlay("show");
+            }
+        });
+        }
+
+             $(document).on("click", ".btn-sumar", function(){
+                 var div_contenedor = $(this).parent("div.d-flex");
+
+                 var input_cantidad = $(div_contenedor).find("input.input-cantidad");
+
+                 var btn = $(this)
+                 var producto = $(input_cantidad).data("producto")
+
+                 var idproducto = parseFloat(producto.Id_Producto) || 0;
+
+                 jQuery.ajax({
+                     url: '@Url.Action("OperacioCarrito", "Tienda")',
+                     type: "POST",
+                     data: JSON.stringify({ idproducto: idproducto, sumar: true }),
+                     dataType: "json",
+                     contentType: "application/json; charset=utf-8",
+                     success: function (data) {
+
+                         $(btn).LoadingOverlay("hide")
+
+                         if (data.respuesta) {
+                             var cantidad = parseInt($(input_cantidad).val()) + 1;
+                             $(input_cantidad).val(cantidad)
+
+                      
+                         } else {
+                             swal("",data.mensaje,"warning")
+                         }
+                     },
+                     beforeSend: function ()
+                     {
+                         $(btn).LoadingOverlay("show")
+                     },
+                     error: function (error) {
+                         $(btn).LoadingOverlay("hide")
+                     }
+                 })
+             })
+
+           $(document).on("click", ".btn-restar", function(){
+           var div_contenedor = $(this).parent("div.d-flex");
+
+           var input_cantidad = $(div_contenedor).find("input.input-cantidad");
+
+           var btn = $(this)
+           var producto = $(input_cantidad).data("producto")
+
+           var idproducto = parseFloat(producto.Id_Producto) || 0;
+
+           var cantidad = parseInt($(input_cantidad).val()) - 1;
+
+           if (cantidad >= 1) {
+               jQuery.ajax({
+                  url: '@Url.Action("OperacioCarrito", "Tienda")',
+                  type: "POST",
+                  data: JSON.stringify({ idproducto: idproducto, sumar: false }),
+                  dataType: "json",
+                  contentType: "application/json; charset=utf-8",
+                  success: function (data) {
+
+                      $(btn).LoadingOverlay("hide")
+
+                      if (data.respuesta) {
+
+                          $(input_cantidad).val(cantidad)
+
+                
+                      } else {
+                          swal("",data.mensaje,"warning")
+                      }
+                  },
+                  beforeSend: function ()
+                  {
+                      $(btn).LoadingOverlay("show")
+                  },
+                  error: function (error) {
+                      $(btn).LoadingOverlay("hide")
+                  }
+              })
+           }
+       })
+
+        $("#btnAplicarFiltro").click(function () {
+            var Id_Categoria = $("input[name=categoria]:checked").val();
+            var Id_Linea = $("input[name=linea]:checked").val();
+            var Id_Catalogo = $("input[name=catalogos]:checked").val();
+            var Electrico = $("input[name=electricos]:checked").val();
+
+            MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Electrico);
+        })
+
+        $(document).on("change","input[name=categoria]", function () {
+            MostrarLineas();
+        })
+
+
+        $(document).on("click", "button.agregarcarrito", function () {
+
+            console.log($(this).data("Id_Producto"))
+
+            jQuery.ajax({
+            url: '@Url.Action("AgregarCarrito", "Tienda")',
+            type: "POST",
+            data: JSON.stringify({ idproducto : $(this).data("Id_Producto")}),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                if (data.respuesta > 0) {
+                    MostrarCantidadCarrito();
+                    MostrarProductos(0, 0, 0, 0);
+
+                    swal({
+                        title: "Agregado al carrito",
+                        text: "¿Desea ir al carrito?",
+                        type: "success",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Si",
+                        cancelButtonText: "No",
+                        closeOnConfirm: true
+                    }, function () {
+                        window.location.href = '@Url.Action("Carrito","Tienda")'
+                    })
+                } else {
+
+                    swal("", data.mensaje, "warning");
+                }
+
+            }
+            });
+
+        });
+
+    </script>
+    
+    }

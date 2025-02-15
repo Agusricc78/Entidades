@@ -30,7 +30,7 @@ namespace DataAccesLayer.Mappers
 
             SqlParameter[] parametros = new SqlParameter[]
             {
-        new SqlParameter("@Ip_Cliente", ipCliente)
+             new SqlParameter("@Ip_Cliente", ipCliente)
             };
 
             DataTable dt = cs.Leer(storeProc, parametros);
@@ -44,11 +44,11 @@ namespace DataAccesLayer.Mappers
             var carrito = new Carrito
             {
                 Id_Carrito = Convert.ToInt32(dt.Rows[0]["Id_Carrito"]),
-                Ip_Cliente = dt.Rows[0]["Ip_Cliente"].ToString(),
-                Subtotal = Convert.ToDecimal(dt.Rows[0]["Subtotal"]),
-                Total = Convert.ToDecimal(dt.Rows[0]["Total"]),
+                //Ip_Cliente = dt.Rows[0]["Ip_Cliente"].ToString(),
+                //Subtotal = Convert.ToDecimal(dt.Rows[0]["Subtotal"]),
+                //Total = Convert.ToDecimal(dt.Rows[0]["Total"]),
 
-                lista = new List<Productos>()
+                //lista = new List<Productos>()
             };
 
             // Llenar la lista de productos
@@ -61,11 +61,11 @@ namespace DataAccesLayer.Mappers
                     Descripcion = row["Descripcion"].ToString(),
                     Precio = Convert.ToDecimal(row["Precio"]),
                     Cod_Producto = row["Cod_Producto"].ToString(),
-                    Imagen = row["Imagen"].ToString(),
+                    //Imagen = row["Imagen"].ToString(),
                     cant = Convert.ToInt32(row["Cantidad"].ToString())
                 };
 
-                carrito.lista.Add(producto);
+                //carrito.lista.Add(producto);
             }
 
             return carrito;
@@ -132,9 +132,6 @@ namespace DataAccesLayer.Mappers
 
         public DataTable PedidosFinalizados()
         {
-
-
-
             return cs.Leer("PedidosFinalizados");
         }
 
@@ -152,7 +149,7 @@ namespace DataAccesLayer.Mappers
 
             SqlParameter[] parametros = new SqlParameter[]
             {
-        new SqlParameter("@Estado", estado)
+              new SqlParameter("@Estado", estado)
             };
 
             DataTable dt = cs.Leer(storeProc, parametros);
@@ -200,7 +197,7 @@ namespace DataAccesLayer.Mappers
                     Id_Producto = Convert.ToInt32(row["Id_Producto"]),
                     Precio = Convert.ToDecimal(row["Precio"]),
                     Cod_Producto = row["Cod_Producto"].ToString(),
-                    Imagen = row["Imagen"].ToString(),
+                    //Imagen = row["Imagen"].ToString(),
                     cant = Convert.ToInt32(row["Cantidad"].ToString()),
                 };
 
@@ -263,7 +260,7 @@ namespace DataAccesLayer.Mappers
                 {
                     Id_Producto = Convert.ToInt32(row["Id_Producto"]),
                     Precio = Convert.ToDecimal(row["Precio"]),
-                    Imagen = row["Imagen"].ToString(),
+                    //Imagen = row["Imagen"].ToString(),
                     cant = Convert.ToInt32(row["Cantidad"])
                 };
 

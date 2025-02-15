@@ -69,7 +69,7 @@ namespace DataAccesLayer.Mappers
                     Password = Convert.ToString(fila["Password"]),
                     Activo = Convert.ToBoolean(fila["Activo"]),
                     Correo = Convert.ToString(fila["Correo"]),
-                    Telefono = Convert.ToInt32(fila["Telefono"]),
+                    //Telefono = Convert.ToInt32(fila["Telefono"]),
                     Apellido = Convert.ToString(fila["Apellido"]),
 
                 };
@@ -105,7 +105,10 @@ namespace DataAccesLayer.Mappers
             return exists;
         }
 
-
+        public DataTable GetAllUsers()
+        {
+            return cn.Leer("GetAllUsers");
+        }
 
     }
 }

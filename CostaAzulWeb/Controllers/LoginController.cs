@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using CostaAzulWeb.Models;
 using System.Reflection;
+using BusinessLogicalLayer;
 
 namespace CostaAzulWeb.Controllers
 {

@@ -21,7 +21,7 @@ namespace DataAccessLayer
                 if (instancia == null)
                 {
 
-                    string cadenaConexion = "Server=PcAgus; Database=CostaAzul; Integrated Security=True;TrustServerCertificate=True;";
+                    string cadenaConexion = "Server=NICOlAS; Database=CostaAzul; Integrated Security=True;TrustServerCertificate=True;";
 
                     instancia = new SqlConnection(cadenaConexion);
                 }

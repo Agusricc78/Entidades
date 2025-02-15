@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "ProductosElectricos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Materiales Electrico</h1>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="container-fluid px-5 my-5">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="contenedor_producto" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            MostrarProductos(0, 0, 0, 3);
+        });
+
+        function ExisteProductoEnCarrito(idProducto) {
+           idProducto
+
+           jQuery.ajax({
+               url: "@Url.Action("ExisteProductoCarrito", "Tienda")",
+               type: "POST",
+               data: JSON.stringify({ idproducto: idProducto }),
+               dataType: "json",
+               contentType: "application/json; charset=utf-8",
+               success: function (response) {
+                   console.log(response);
+                   if (response.respuesta > 0) {
+                       console.log("Producto con ID " + idProducto + " ya está en el carrito");
+                   } else {
+                       console.log("Producto con ID " + idProducto + " no está en el carrito");
+                   }
+               },
+               error: function () {
+                   console.error("Error al verificar el producto con ID " + idProducto);
+               }
+           });
+        }
+
+        function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico) {
+            jQuery.ajax({
+                url: '@Url.Action("getProductos", "Tienda")',
+                type: "POST",
+                data: JSON.stringify({ Id_Categoria: Id_Categoria, Id_Linea: Id_Linea, Id_Catalogo: Id_Catalogo, Elecrico: Elecrico }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#contenedor_producto").html("");
+                    $("#contenedor_producto").LoadingOverlay("hide");
+
+                    $.each(response.data, function (i, element) {
+
+
+                        let idProducto = element.Id_Producto;
+
+                        let cardFooter = $("<div>").addClass("card-footer pt-0 border-top-0 bg-transparent ");
+
+                        if (element.stock > 0) {
+                            cardFooter.append(
+                                $("<button>").addClass("btn btn-success mt-auto agregarcarrito ")
+                                    .css("margin-right", "10px")
+                                    .data("Id_Producto", idProducto)
+                                    .text("Agregar al carrito"),
+
+                                $("<a>").addClass("btn btn-dark mt-auto")
+                                    .attr({ "href": "@Url.Action("DetalleProducto", "Tienda")?Id_Producto=" + element.Id_Producto })
+                                    .text("Ver Detalle")
+                            );
+                        } else {
+                            cardFooter.append(
+                                $("<button>").addClass("btn btn-light mt-auto w-100")
+                                    .text("Consultar")
+                            );
+                        }
+
+
+                        let productCard = $("<div>").addClass("col-12 col-md-6 mb-5").append(
+                            $("<div>").addClass("card h-100").append(
+                                $("<img>").addClass("card-img-top")
+                                    .attr("src", element.Imagen ? "data:image/" + element.ExtImagen + ";base64," + element.Imagen : "URL_DE_IMAGEN_POR_DEFECTO"),
+                                $("<div>").addClass("card-body p-4").append(
+                                    $("<div>").addClass("text-center").append(
+                                        $("<h5>").addClass("fw-bolder").text(element.Nombre),
+                                        $("<p>").text("$" + element.Precio.toFixed(2))
+                                    )
+                                ),
+                                $("<div>").addClass("text-center").append(
+                                    (element.stock <= 0 ? $("<p>").addClass("text-danger fw-bold").text("¡Agotado!") : ""),
+                                ),
+                                $("<div>").addClass("d-grid gap-2").append(cardFooter)
+                            )
+                        );
+
+                        productCard.appendTo("#contenedor_producto");
+
+                        ExisteProductoEnCarrito(idProducto);
+                    });
+                },
+                beforeSend: function () {
+                    $("#contenedor_producto").LoadingOverlay("show");
+                }
+            });
+        }
+
+           $(document).on("click", "button.agregarcarrito", function () {
+
+               console.log($(this).data("Id_Producto"))
+
+               jQuery.ajax({
+               url: '@Url.Action("AgregarCarrito", "Tienda")',
+               type: "POST",
+               data: JSON.stringify({ idproducto : $(this).data("Id_Producto")}),
+               dataType: "json",
+               contentType: "application/json; charset=utf-8",
+               success: function (data) {
+
+                   if (data.respuesta > 0) {
+                       MostrarCantidadCarrito();
+
+
+                       swal({
+                           title: "Agregado al carrito",
+                           text: "¿Desea ir al carrito?",
+                           type: "success",
+                           showCancelButton: true,
+                           confirmButtonClass: "btn-primary",
+                           confirmButtonText: "Si",
+                           cancelButtonText: "No",
+                           closeOnConfirm: true
+                       }, function () {
+                           window.location.href = '@Url.Action("Carrito","Tienda")'
+                       })
+                   } else {
+
+                       swal("", data.mensaje, "warning");
+                   }
+
+               }
+               });
+
+           });
+    </script>
+}

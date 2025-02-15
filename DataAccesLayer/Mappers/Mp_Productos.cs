@@ -93,13 +93,13 @@ namespace DataAccessLayer.Mappers
                     Id_Linea = Convert.ToInt32(fila["Id_Linea"]),
                     Cod_Producto = Convert.ToString(fila["Cod_Producto"]),
                     Activo = Convert.ToBoolean(fila["Activo"]),
-                    Id_Categoria = Convert.ToString(fila["Id_Categoria"]),
-                    Precio = Convert.ToInt32(fila["Precio"]),
-                    stock = Convert.ToInt32(fila["Stock"]),
-                    Descripcion = Convert.ToString(fila["Descripcion"]),
-                    Imagen = Convert.ToString(fila["Imagen"]),
-                    Id_Catalogo = Convert.ToInt32(fila["Id_Producto"]),
-                    Electrico = Convert.ToBoolean(fila["Electrico"])
+                    //Id_Categoria = Convert.ToString(fila["Id_Categoria"]),
+                    //Precio = Convert.ToInt32(fila["Precio"]),
+                    //stock = Convert.ToInt32(fila["Stock"]),
+                    //Descripcion = Convert.ToString(fila["Descripcion"]),
+                    //Imagen = Convert.ToString(fila["Imagen"]),
+                    //Id_Catalogo = Convert.ToInt32(fila["Id_Producto"]),
+                    //Electrico = Convert.ToBoolean(fila["Electrico"])
 
                 };
                 return pro;
@@ -188,7 +188,7 @@ namespace DataAccessLayer.Mappers
                     Descripcion = row["NombreProducto"].ToString(),
                     Cod_Producto = row["Cod_Producto"].ToString(),
                     Precio = Convert.ToDecimal(row["Precio"]),
-                    Imagen = row["Imagen"].ToString(),
+                    //Imagen = row["Imagen"].ToString(),
                    
                 });
             }

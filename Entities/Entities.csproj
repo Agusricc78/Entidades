@@ -42,15 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Carrito.cs" />
-    <Compile Include="CarritoModel.cs" />
-    <Compile Include="Catalogos.cs" />
     <Compile Include="Categorias.cs" />
-    <Compile Include="Cliente.cs" />
+    <Compile Include="DetalleVenta.cs" />
     <Compile Include="Linea.cs" />
-    <Compile Include="Pedido.cs" />
+    <Compile Include="Localidad.cs" />
+    <Compile Include="Partido.cs" />
     <Compile Include="Productos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tipo_Producto.cs" />
+    <Compile Include="Provincia.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="Ventas.cs" />
   </ItemGroup>
