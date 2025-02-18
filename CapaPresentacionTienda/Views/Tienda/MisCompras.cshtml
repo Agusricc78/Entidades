@@ -1,4 +1,6 @@
-﻿@model List<Entities.DetalleVenta>
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<CapaPresentacionTienda.Models.PaginatedVentas>
+
 @{
     ViewBag.Title = "MisCompras";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,67 +9,105 @@
 <div class="container">
     <div class="row mt-5">
         <div class="col-sm-12">
-            @{ 
-                if (Model.Count > 0)
-                {
-                    foreach (var item in Model)
-                    {
-                        <div class="row mb-3">
-                                <div class="col-sm-12">
-                                    <div class="card">
-                                        <div class="card-body bg-light">
-                                             <h4>NRO PEDIDO : @item.Ventas.NroPedido</h4>
-                                                <h6>ID TRANSACCION : @item.Ventas.Id_Transaccion</h6>
-                                                <div class="table-responsive">
-
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Imagen</th>
-                                                                <th>Producto</th>
-                                                                <th>Precio Unitario</th>
-                                                                <th>Cantidad</th>
-                                                                <th>Sub Total</th>
-                                                            </tr>
-
-                                                        </thead>
-
-                                                        <tbody class="bg-white">
-                                                            <tr>
-                                                                <td>
-                                                                    <img class="card-img-top mb-5 mb-md-0" src=" @item.Productos.Imagen ? data:image/@item.Productos.Imagen + @item.Productos.ExtImagen;base64; @item.Productos.Imagen" style="width:120px;height:120px" />
-                                                                </td>
-                                                                <td valign="middle">
-                                                                    @item.Productos.Nombre
-                                                                </td>
-                                                                <td valign="middle">
-                                                                    $ @item.Productos.Precio
-                                                                </td>
-                                                                <td valign="middle">
-                                                                    @item.Cantidad
-                                                                </td>
-                                                                <td valign="middle">
-                                                                   $ @item.Total
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                    }
-                }
-                else
+            @if (Model.Count > 0)
+            {
+                foreach (var pedido in Model)
                 {
                     <div class="row mb-3">
-                        <div class="col-sm-12 text-center">
-                            <h1>No se encontro ninguna compra</h1>
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-body bg-light">
+                                    <h4>NRO PEDIDO: @pedido.NroPedido</h4>
+                                    <h6>ID TRANSACCION: @pedido.Id_Transaccion</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Imagen</th>
+                                                    <th>Producto</th>
+                                                    <th>Precio Unitario</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Sub Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-white">
+                                                @foreach (var item in pedido.Productos)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @if (!string.IsNullOrEmpty(item.Imagen))
+                                                            {
+                                                                <img src="data:image/@item.ExtImagen;base64,@item.Imagen" style="width:120px;height:120px;" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>Sin imagen</span>
+                                                            }
+                                                        </td>
+                                                        <td>@item.Nombre</td>
+                                                        <td>$ @item.Precio</td>
+                                                        <td>@item.Cantidad</td>
+                                                        <td>$ @item.Total</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
             }
+            else
+            {
+                <div class="row mb-3">
+                    <div class="col-sm-12 text-center">
+                        <h1>No se encontró ninguna compra</h1>
+                    </div>
+                </div>
+            }
+
+            <!-- Paginación -->
+            <!-- Paginación Mejorada -->
+            <div class="d-flex justify-content-center mt-4">
+                <nav>
+                    <ul class="pagination">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("MisCompras", new { page = Model.PageNumber - 1 })">Anterior</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Anterior</span>
+                            </li>
+                        }
+
+                        @for (int i = 1; i <= Model.PageCount; i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("MisCompras", new { page = i })">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("MisCompras", new { page = Model.PageNumber + 1 })">Siguiente</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link">Siguiente</span>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>

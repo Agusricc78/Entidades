@@ -81,11 +81,22 @@
                                             </select>
                                         </div>
 
-                                        <div class="d-grid">
-                                            <button class="btn btn-success" type="button" onclick="RealizarPago()">
-                                                <i class="fab fa-shopify"></i> Finalizar y Realizar Pago
-                                            </button>
-                                        </div>
+                                        @if (Session["Cliente"] == null)
+                                        {
+                                            <div class="d-grid">
+                                                <button class="btn btn-warning" type="button" onclick="SessionNull()">
+                                                    <i class="fas fa-exclamation-triangle"></i>  Inicia Session Para Pagar
+                                                </button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="d-grid">
+                                                <button class="btn btn-success" type="button" onclick="RealizarPago()">
+                                                    <i class="fab fa-shopify"></i> Finalizar y Realizar Pago
+                                                </button>
+                                            </div>
+                                        }
                                     </form>
                                 </div>
 
@@ -192,6 +203,10 @@
         })
 
 
+        function SessionNull() {
+            swal("", "Porfavor para proceder a realizar la compra primero debe Iniciar Session :)", "warning")
+        }
+
         function ListarProvincias() {
             $("<option>").attr({ "value": "0", "disabled":"disabled", "selected":"true" }).text("Seleccionar").appendTo("#cboProvincia")
 
@@ -238,6 +253,11 @@
 
             $("#totalProductos").text(sumaTotal.toFixed(2))
             $("#totalProductos").data("sumaTotal",sumaTotal)
+        }
+
+        function vaciarCarrito() {
+            localStorage.removeItem("carrito");
+            MostrarCantidadCarrito();
         }
 
 

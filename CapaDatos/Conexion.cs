@@ -17,7 +17,7 @@ namespace CapaDatos
 
         public Conexion()
         {
-            string cadena = "Server=NICOlAS;Database=CostaAzul;Integrated Security=True;TrustServerCertificate=True;";
+            string cadena = "Server=costaazul.database.windows.net;Database=CostaAzul;User Id=adminCA;Password=Costaazul123;TrustServerCertificate=True;";
             conector = new SqlConnection(cadena);
             cmd = new SqlCommand();
         }

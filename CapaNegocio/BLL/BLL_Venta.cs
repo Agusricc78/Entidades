@@ -15,12 +15,12 @@ namespace CapaNegocio.BLL
     {
         MP_Venta obj = new MP_Venta();
 
-        public int Registrar(Ventas vt, DataTable detalleVenta,string correo ,out string Mensaje)
+        public int Registrar(Ventas vt, DataTable detalleVenta ,string correo, out string Mensaje)
         {
             Mensaje = string.Empty;
             int resultado = obj.Registrar(vt, detalleVenta, out Mensaje);
 
-            if(resultado > 0)
+            if (resultado > 0)
             {
                 string asunto = "Compra realizada con Exito!!";
                 string Mensaje_correo = "<h3> Gracias por comprar en Costa Azul!!</h3></br><P> Su Nro de Pedido es: !pedido!</P> </br>";
@@ -75,7 +75,6 @@ namespace CapaNegocio.BLL
             {
                 return 0;
             }
-    
         }
 
 

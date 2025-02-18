@@ -14,42 +14,67 @@ namespace CapaDatos.Mappers
         private readonly Conexion cn = new Conexion();
         public int Registrar(Ventas vt, DataTable detalleVenta, out string Mensaje)
         {
-            Mensaje = string.Empty; // Inicializamos por si no se asigna valor.
+            Mensaje = string.Empty;
 
-            SqlParameter parametroMensaje = new SqlParameter("@Mensaje", SqlDbType.NVarChar, 500)
+            // Validación del parámetro 'detalleVenta'
+            if (detalleVenta == null || detalleVenta.Rows.Count == 0)
             {
-                Direction = ParameterDirection.Output
-            };
+                Mensaje = "El detalle de la venta está vacío o es inválido.";
+                return 0; // Indica que no se puede registrar sin un detalle válido
+            }
 
-            SqlParameter parametroResultado = new SqlParameter("@Resultado", SqlDbType.Int)
+            try
             {
-                Direction = ParameterDirection.Output
-            };
+                SqlParameter parametroMensaje = new SqlParameter("@Mensaje", SqlDbType.NVarChar, 500)
+                {
+                    Direction = ParameterDirection.Output
+                };
 
-            SqlParameter[] parametros = new SqlParameter[]
+                SqlParameter parametroResultado = new SqlParameter("@Resultado", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                SqlParameter[] parametros = new SqlParameter[]
+                {
+                new SqlParameter("@Id_Cliente", vt.Id_Cliente),
+                new SqlParameter("@Ip_Cliente", vt.Ip_Cliente),
+                new SqlParameter("@TotalProducto", vt.TotalProductos),
+                new SqlParameter("@MontoTotal", vt.MontoTotal),
+                new SqlParameter("@Direccion", vt.Direccion),
+                new SqlParameter("@Id_Transaccion", vt.Id_Transaccion),
+                new SqlParameter("@FormaPago", vt.FormaPago),
+                new SqlParameter("@FormaRetiro", vt.FormaRetiro),
+                new SqlParameter("@Id_Estado", vt.Id_Estado),
+                new SqlParameter("@NroPedido", vt.NroPedido),
+                new SqlParameter("@Id_Localidad", vt.Id_Localidad),
+
+                // Verificar si el DataTable es null
+                new SqlParameter("@DetalleVenta", detalleVenta),
+
+                parametroMensaje,
+                parametroResultado,
+                };
+
+                // Ejecución del procedimiento almacenado
+                cn.Escribir("RegistrarVenta", parametros);
+
+                // Obtener el mensaje y resultado de la operación
+                Mensaje = parametroMensaje.Value?.ToString();
+
+                // Devolver el resultado
+                return (parametroResultado.Value != DBNull.Value) ? Convert.ToInt32(parametroResultado.Value) : 0;
+            }
+            catch (Exception ex)
             {
-        new SqlParameter("@Id_Cliente", vt.Id_Cliente),
-        new SqlParameter("@Ip_Cliente", vt.Ip_Cliente),
-        new SqlParameter("@TotalProducto", vt.TotalProductos),
-        new SqlParameter("@MontoTotal", vt.MontoTotal),
-        new SqlParameter("@Direccion", vt.Direccion),
-        new SqlParameter("@Id_Transaccion", vt.Id_Transaccion),
-        new SqlParameter("@FormaPago", vt.FormaPago),
-        new SqlParameter("@FormaRetiro", vt.FormaRetiro),
-        new SqlParameter("@Id_Estado", vt.Id_Estado),
-        new SqlParameter("@NroPedido", vt.NroPedido),
-        new SqlParameter("@Id_Localidad", vt.Id_Localidad),
-        new SqlParameter("@DetalleVenta", detalleVenta),
-        parametroMensaje,
-        parametroResultado,
-            };
-
-            // Llamamos al procedimiento almacenado, el cual ahora maneja la transacción internamente
-            cn.Escribir("RegistrarVenta", parametros);
-
-            Mensaje = parametroMensaje.Value?.ToString();
-            return (parametroResultado.Value != DBNull.Value) ? Convert.ToInt32(parametroResultado.Value) : 0;
+                // Manejo de errores y log
+                Mensaje = "Error en producción: " + ex.Message;
+                Console.WriteLine("Error en producción: " + ex.ToString());
+                return 0; // Indica que hubo un error al registrar la venta
+            }
         }
+
+
 
 
         public DataTable GetComprasCliente(int idcliente)

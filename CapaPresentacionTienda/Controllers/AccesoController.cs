@@ -128,7 +128,7 @@ namespace CapaPresentacionTienda.Controllers
             if (respuesta)
             {
                 ViewBag.Error = null;
-                return RedirectToAction("Index", "Acceso");
+                return RedirectToAction("Index", "Tienda");
             }
             else
             {
@@ -180,7 +180,7 @@ namespace CapaPresentacionTienda.Controllers
 
             if (respuesta == 1)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("Index","Tienda");
             }
             else
             {
@@ -195,7 +195,7 @@ namespace CapaPresentacionTienda.Controllers
         {
             Session["Cliente"] = null;
             FormsAuthentication.SignOut();
-            return RedirectToAction("Index", "Acceso");
+            return RedirectToAction("Index", "Tienda");
         }
 
 

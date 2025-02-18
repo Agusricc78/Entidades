@@ -54,7 +54,6 @@ namespace CapaNegocio
                 mail.Body = mensaje;
                 mail.IsBodyHtml = true;
 
-
                 var smtp = new SmtpClient()
                 {
                     Credentials = new NetworkCredential("nicolasspada9@gmail.com", "puyvbbgkymushzms"),
@@ -68,12 +67,14 @@ namespace CapaNegocio
             }
             catch (Exception ex)
             {
+                // Log the exception or output it for debugging
+                Console.WriteLine($"Error sending email: {ex.Message}");
+                // Optionally log this to a file or database for further analysis
                 Resultado = false;
-       
             }
             return Resultado;
-
         }
+
 
 
         public static string ConvertirBase64(string ruta, out bool conversion)

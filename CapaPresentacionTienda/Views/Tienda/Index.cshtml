@@ -131,7 +131,17 @@
 
         $(document).ready(function () {
             MostrarCategorias();
-            MostrarProductos(0, 0, 0, 0);
+
+            var productosGuardados = JSON.parse(localStorage.getItem("productos"));
+            console.log(productosGuardados);
+            if (productosGuardados) {
+                // Si existen, cargarlos directamente desde el localStorage
+                MostrarProductos(0, 0, 0, 0);
+            } else {
+                // Si no existen, hacer la solicitud AJAX para obtener los productos
+                MostrarProductos(0, 0, 0, 0);  // Llamamos a MostrarProductos con parámetros por defecto o según sea necesario
+            }
+
 
             $("#searchInput").on("keyup", function () {
                 let filtro = $(this).val().toLowerCase();
@@ -148,7 +158,7 @@
             });
         });
 
- 
+
         function ExisteProductoEnCarrito(idProducto, callback = function () {}) {
 
 
@@ -175,9 +185,6 @@
                 }
             });
         }
-
-
-
 
       function MostrarCategorias() {
             jQuery.ajax({
@@ -241,7 +248,7 @@
           });
         }
 
-       function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico) {
+          function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico) {
         jQuery.ajax({
             url: '@Url.Action("getProductos", "Tienda")',
             type: "POST",
@@ -337,6 +344,8 @@
         });
         }
 
+
+
              $(document).on("click", ".btn-sumar", function(){
                  var div_contenedor = $(this).parent("div.d-flex");
 
@@ -361,7 +370,7 @@
                              var cantidad = parseInt($(input_cantidad).val()) + 1;
                              $(input_cantidad).val(cantidad)
 
-                      
+
                          } else {
                              swal("",data.mensaje,"warning")
                          }
@@ -403,7 +412,7 @@
 
                           $(input_cantidad).val(cantidad)
 
-                
+
                       } else {
                           swal("",data.mensaje,"warning")
                       }
@@ -448,19 +457,6 @@
                 if (data.respuesta > 0) {
                     MostrarCantidadCarrito();
                     MostrarProductos(0, 0, 0, 0);
-
-                    swal({
-                        title: "Agregado al carrito",
-                        text: "¿Desea ir al carrito?",
-                        type: "success",
-                        showCancelButton: true,
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Si",
-                        cancelButtonText: "No",
-                        closeOnConfirm: true
-                    }, function () {
-                        window.location.href = '@Url.Action("Carrito","Tienda")'
-                    })
                 } else {
 
                     swal("", data.mensaje, "warning");

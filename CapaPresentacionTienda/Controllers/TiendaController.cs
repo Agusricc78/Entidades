@@ -19,6 +19,10 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using CapaPresentacionTienda.Filter;
+using PagedList;
+using PagedList.Mvc;
+using CapaPresentacionTienda.Models;
+using System.Web.UI;
 
 namespace CapaPresentacionTienda.Controllers
 {
@@ -59,7 +63,6 @@ namespace CapaPresentacionTienda.Controllers
         }
 
         [HttpGet]
-
         public JsonResult GetCategorias()
         {
             DataTable dt = new BLL_Categoria().GetAllCategorias();
@@ -77,7 +80,6 @@ namespace CapaPresentacionTienda.Controllers
 
 
         [HttpPost]
-
         public JsonResult GetLineasCategoria(int Id_Categoria)
         {
             DataTable dt = new BLL_Linea().GetLineaCategoria(Id_Categoria);
@@ -93,7 +95,6 @@ namespace CapaPresentacionTienda.Controllers
         }
 
         [HttpPost]
-
         public JsonResult GetProvincias()
         {
             DataTable dt = new BLL_Ubicacion().GetProvincias();
@@ -109,7 +110,6 @@ namespace CapaPresentacionTienda.Controllers
         }
 
         [HttpPost]
-
         public JsonResult GetPartidosXProvincia(int idprovincia)
         {
             DataTable dt = new BLL_Ubicacion().GetPartidosXProvincia(idprovincia);
@@ -179,6 +179,32 @@ namespace CapaPresentacionTienda.Controllers
             return jsonresult;
         }
 
+        public void SetTokenInCookie(string token)
+        {
+            HttpCookie tokenCookie = new HttpCookie("UserToken", token);
+            tokenCookie.Expires = DateTime.Now.AddDays(30);  
+            Response.Cookies.Add(tokenCookie);
+        }
+
+        public string GetTokenFromCookie()
+        {
+            HttpCookie tokenCookie = Request.Cookies["UserToken"];
+            if (tokenCookie != null)
+            {
+                return tokenCookie.Value;
+            }
+
+            return null; 
+        }
+
+        public string GenerarTokenUnico()
+        {
+            // Genera un GUID y toma los primeros 8 caracteres del hash
+            var guid = Guid.NewGuid().ToString("N"); // Esto genera un GUID sin guiones
+            return guid.Substring(0, 8); // Aquí tomas solo los primeros 8 caracteres
+        }
+
+
 
         private List<Productos> ConvertirDataTableALista(DataTable dt)
         {
@@ -230,24 +256,23 @@ namespace CapaPresentacionTienda.Controllers
 
 
         [HttpPost]
-
         public JsonResult AgregarCarrito(int idproducto)
         {
             int idcliente = 0;
 
-            string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            string token = GetTokenFromCookie();
 
-            // Si no hay "X-Forwarded-For", usamos la IP de la solicitud directa
-            if (string.IsNullOrEmpty(ipAddress))
+            // Si el token es válido, lo puedes usar
+            if (!string.IsNullOrEmpty(token))
             {
-                ipAddress = Request.UserHostAddress;
+                // Usar el token para lo que necesites
             }
-
-            if (ipAddress == "::1")
+            else
             {
-                ipAddress = "127.0.0.1";
+                // Si no existe el token, podrías generar uno nuevo y almacenarlo en la cookie
+                token = GenerarTokenUnico();
+                SetTokenInCookie(token);
             }
-
 
             if (Session["Cliente"] == null)
             {
@@ -259,7 +284,8 @@ namespace CapaPresentacionTienda.Controllers
             }
 
             int cantidad = 0;
-            int existe = new BLL_Carrito().ExisteCarrito(ipAddress, idproducto, out cantidad);
+
+            int existe = new BLL_Carrito().ExisteCarrito(token, idproducto, out cantidad);
 
             int respuesta = 0;
 
@@ -271,7 +297,7 @@ namespace CapaPresentacionTienda.Controllers
             }
             else
             {
-                respuesta = new BLL_Carrito().OperacionCarrito(idcliente, idproducto, ipAddress, true, out Mensaje);
+                respuesta = new BLL_Carrito().OperacionCarrito(idcliente, idproducto, token, true, out Mensaje);
             }
 
 
@@ -282,22 +308,24 @@ namespace CapaPresentacionTienda.Controllers
         public JsonResult ExisteProductoCarrito(int idproducto)
         {
 
-            string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            string token = GetTokenFromCookie();
+
+            // Si el token es válido, lo puedes usar
+            if (!string.IsNullOrEmpty(token))
+            {
+                // Usar el token para lo que necesites
+            }
+            else
+            {
+                // Si no existe el token, podrías generar uno nuevo y almacenarlo en la cookie
+                token = GenerarTokenUnico();
+                SetTokenInCookie(token);
+            }
+
             int respuesta = 0;
 
-            // Si no hay "X-Forwarded-For", usamos la IP de la solicitud directa
-            if (string.IsNullOrEmpty(ipAddress))
-            {
-                ipAddress = Request.UserHostAddress;
-            }
-
-            if (ipAddress == "::1")
-            {
-                ipAddress = "127.0.0.1";
-            }
-
             int cantidad = 0;
-            respuesta = new BLL_Carrito().ExisteCarrito(ipAddress, idproducto, out cantidad);
+            respuesta = new BLL_Carrito().ExisteCarrito(token, idproducto, out cantidad);
 
             return Json(new { respuesta = respuesta, cantidad = cantidad }, JsonRequestBehavior.AllowGet);
         }
@@ -307,20 +335,21 @@ namespace CapaPresentacionTienda.Controllers
 
         public JsonResult CantidadEnCarrito()
         {
-            string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            string token = GetTokenFromCookie();
 
-            // Si no hay "X-Forwarded-For", usamos la IP de la solicitud directa
-            if (string.IsNullOrEmpty(ipAddress))
+            // Si el token es válido, lo puedes usar
+            if (!string.IsNullOrEmpty(token))
             {
-                ipAddress = Request.UserHostAddress;
+                // Usar el token para lo que necesites
+            }
+            else
+            {
+                // Si no existe el token, podrías generar uno nuevo y almacenarlo en la cookie
+                token = GenerarTokenUnico();
+                SetTokenInCookie(token);
             }
 
-            if (ipAddress == "::1")
-            {
-                ipAddress = "127.0.0.1";
-            }
-
-            object cantidad = new BLL_Carrito().CantidadEnCarrito(ipAddress);
+            object cantidad = new BLL_Carrito().CantidadEnCarrito(token);
 
             return Json(new { cantidad = cantidad }, JsonRequestBehavior.AllowGet);
         }
@@ -329,19 +358,21 @@ namespace CapaPresentacionTienda.Controllers
         {
             try
             {
-                string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                string token = GetTokenFromCookie();
 
-                if (string.IsNullOrEmpty(ipAddress))
+                // Si el token es válido, lo puedes usar
+                if (!string.IsNullOrEmpty(token))
                 {
-                    ipAddress = Request.UserHostAddress;
+                    // Usar el token para lo que necesites
+                }
+                else
+                {
+                    // Si no existe el token, podrías generar uno nuevo y almacenarlo en la cookie
+                    token = GenerarTokenUnico();
+                    SetTokenInCookie(token);
                 }
 
-                if (ipAddress == "::1")
-                {
-                    ipAddress = "127.0.0.1";
-                }
-
-                var carritoDatatable = new BLL_Carrito().GetCarrito(ipAddress);
+                var carritoDatatable = new BLL_Carrito().GetCarrito(token);
 
                 if (carritoDatatable == null || carritoDatatable.Rows.Count == 0)
                 {
@@ -372,21 +403,24 @@ namespace CapaPresentacionTienda.Controllers
 
 
         [HttpPost]
-
         public JsonResult OperacioCarrito(int idproducto, bool sumar)
         {
-            string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+          
             int idcliente = 0;
             string Mensaje = string.Empty;
-            // Si no hay "X-Forwarded-For", usamos la IP de la solicitud directa
-            if (string.IsNullOrEmpty(ipAddress))
-            {
-                ipAddress = Request.UserHostAddress;
-            }
 
-            if (ipAddress == "::1")
+            string token = GetTokenFromCookie();
+
+            // Si el token es válido, lo puedes usar
+            if (!string.IsNullOrEmpty(token))
             {
-                ipAddress = "127.0.0.1";
+                // Usar el token para lo que necesites
+            }
+            else
+            {
+                // Si no existe el token, podrías generar uno nuevo y almacenarlo en la cookie
+                token = GenerarTokenUnico();
+                SetTokenInCookie(token);
             }
 
             if (Session["Cliente"] == null)
@@ -398,30 +432,34 @@ namespace CapaPresentacionTienda.Controllers
                 idcliente = ((Usuario)Session["Cliente"]).Id_Usuario;
             }
 
-            int respuesta = new BLL_Carrito().OperacionCarrito(idcliente, idproducto, ipAddress, sumar, out Mensaje);
+            int respuesta = new BLL_Carrito().OperacionCarrito(idcliente, idproducto, token, sumar, out Mensaje);
 
             return Json(new { respuesta = respuesta, mensaje = Mensaje }, JsonRequestBehavior.AllowGet);
         }
+
 
         [HttpPost]
         public JsonResult EliminarCarrito(int idproducto)
         {
 
-            string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+           
 
             string Mensaje = string.Empty;
-            // Si no hay "X-Forwarded-For", usamos la IP de la solicitud directa
-            if (string.IsNullOrEmpty(ipAddress))
+            string token = GetTokenFromCookie();
+
+            // Si el token es válido, lo puedes usar
+            if (!string.IsNullOrEmpty(token))
             {
-                ipAddress = Request.UserHostAddress;
+                // Usar el token para lo que necesites
+            }
+            else
+            {
+                // Si no existe el token, podrías generar uno nuevo y almacenarlo en la cookie
+                token = GenerarTokenUnico();
+                SetTokenInCookie(token);
             }
 
-            if (ipAddress == "::1")
-            {
-                ipAddress = "127.0.0.1";
-            }
-
-            int respuesta = new BLL_Carrito().EliminarCarrito(ipAddress, idproducto);
+            int respuesta = new BLL_Carrito().EliminarCarrito(token, idproducto);
 
             return Json(new { respuesta = respuesta, mensaje = Mensaje }, JsonRequestBehavior.AllowGet);
         }
@@ -509,86 +547,78 @@ namespace CapaPresentacionTienda.Controllers
             decimal Total = 0;
             string Mensaje = string.Empty;
 
-            // Verificación de forma de pago
-            if (vt.FormaPago == "1")
+            // Validar forma de pago
+            vt.FormaPago = (vt.FormaPago == "1") ? "Efectivo" : "Mercado Pago";
+            vt.FormaRetiro = (vt.FormaRetiro == "1") ? "Local" : "Envio";
+
+            // Obtener IP del cliente
+            string token = GetTokenFromCookie();
+
+            // Si el token es válido, lo puedes usar
+            if (!string.IsNullOrEmpty(token))
             {
-                vt.FormaPago = "Efectivo";
+               vt.Ip_Cliente = token;
             }
             else
             {
-                vt.FormaPago = "Mercado Pago";
+                token = GenerarTokenUnico();
+                SetTokenInCookie(token);
             }
 
-            // Verificación de forma de retiro
-            if (vt.FormaRetiro == "1")
-            {
-                vt.FormaRetiro = "Local";
-            }
-            else
-            {
-                vt.FormaRetiro = "Envio";
-            }
-
-            // Verifica la IP del cliente
-            string ipAddress = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            if (string.IsNullOrEmpty(ipAddress))
-            {
-                vt.Ip_Cliente = Request.UserHostAddress;
-            }
-            if (vt.Ip_Cliente == "::1")
-            {
-                vt.Ip_Cliente = "127.0.0.1";
-            }
-
-            // Verificar si el usuario está autenticado
+            // Validar sesión del usuario
             if (Session["Cliente"] == null)
             {
-                return Json(new { Status = false, mensaje = "Para poder procesar el pago debe iniciar sesión, por favor." });
+                return Json(new { Status = false, mensaje = "La sesión ha expirado. Vuelve a iniciar sesión." });
             }
 
-            // Obtener el ID del cliente
-            vt.Id_Cliente = ((Usuario)Session["Cliente"]).Id_Usuario;
+            vt.Id_Cliente = (Session["Cliente"] == null || Session["Cliente"] == DBNull.Value)
+                            ? 1
+                            : ((Usuario)Session["Cliente"]).Id_Usuario;
 
-            // Crear la tabla de detalles de venta
+            // Crear tabla de detalle de venta
             DataTable dt = new DataTable();
-            dt.Locale = new System.Globalization.CultureInfo("es-AR");
             dt.Columns.Add("Id_Producto", typeof(int));
             dt.Columns.Add("Cantidad", typeof(int));
             dt.Columns.Add("Total", typeof(decimal));
             dt.Columns.Add("NombreProducto", typeof(string));
 
+            // Llenar el DataTable con los productos del carrito
             foreach (Carrito carrito in listaCarrito)
             {
-                decimal subtotal = Convert.ToDecimal(carrito.Cantidad.ToString()) * carrito.producto.Precio;
+                decimal subtotal = Convert.ToDecimal(carrito.Cantidad) * carrito.producto.Precio;
                 Total += subtotal;
 
                 dt.Rows.Add(new object[] { carrito.producto.Id_Producto, carrito.Cantidad, subtotal, carrito.producto.Nombre });
             }
 
+            // Validar si el detalle de venta está vacío antes de continuar
+            if (dt.Rows.Count == 0)
+            {
+                return Json(new { Status = false, mensaje = "El carrito de compras está vacío." });
+            }
+
+            // Verificar que los Id_Producto existen en la base de datos antes de insertar
+
+            Session["Venta"] = vt;
+            Session["DetalleVenta"] = dt;
             // Guardar información en TempData
             vt.MontoTotal = Total;
-            vt.Id_Estado = 2;
+            vt.Id_Estado = 1;
             vt.TotalProductos = dt.Rows.Count;
 
+            // Generar número de pedido
             object IdCorrelativo = new BLL_Venta().ObtenerCorrelativo();
-            string NroPedido = string.Format("{0:00000}", IdCorrelativo);
-
-            vt.NroPedido = NroPedido;
-
-            Session["DetalleVenta"] = dt;
-            Session["Venta"] = vt;
+            vt.NroPedido = string.Format("{0:00000}", IdCorrelativo);
 
 
-            // Verificar si la forma de pago es Mercado Pago
+            
+            // Si el pago es Mercado Pago, generar URL de pago
             if (vt.FormaPago == "Mercado Pago")
             {
-                // Llamar a CrearPreferencias para generar la URL de pago
-                string urlPago = await CrearPreferencias(); // Obtenemos la URL directamente desde el método
+                string urlPago = await CrearPreferencias(); // Método para generar el link de pago
 
-                // Verificar si la URL fue obtenida correctamente
                 if (!string.IsNullOrEmpty(urlPago))
                 {
-                    // Redirigir al usuario a la URL de Mercado Pago
                     return Json(new { Status = true, Link = urlPago });
                 }
                 else
@@ -596,31 +626,69 @@ namespace CapaPresentacionTienda.Controllers
                     return Json(new { Status = false, mensaje = "Hubo un error al generar la preferencia de pago. Intenta nuevamente." });
                 }
             }
+            else
+            {
+                Random random = new Random();
+                string paymentId = random.Next(10000000, 99999999).ToString();
+             
+                try
+                {
 
-            Random random = new Random();
-            int paymentId = random.Next(10000000, 99999999);  // Genera un número aleatorio de 8 dígitos
-            return Json(new { Status = true, Link = $"/Tienda/PagoEfectuado?payment_id={paymentId}&status=true" });
-
+                     return Json(new { Status = true, Link = $"/Tienda/PagoEfectuado?payment_id={paymentId}&status=true" });
+        
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { Status = false, mensaje = "Error en la inserción: " + ex.Message });
+                }
+            }
         }
 
-        [ValidarSession]
-        [Authorize]
-        public ActionResult MisCompras()
-        {
-            int idcliente = ((Usuario)Session["Cliente"]).Id_Usuario;
+    
 
-            var ventasdatatable = new BLL_Venta().GetComprasCliente(idcliente);
-            List<DetalleVenta> ventas = ConvertirDataTableAListaDetalleVenta(ventasdatatable);
+    [ValidarSession]
+    [Authorize]
+    public ActionResult MisCompras(int? page)
+    {
+        int idcliente = ((Usuario)Session["Cliente"]).Id_Usuario;
+        int pageSize = 3; // Número de pedidos por página
+        int pageNumber = (page ?? 1); // Página actual
 
-            return View(ventas);
-        }
+        var ventasdatatable = new BLL_Venta().GetComprasCliente(idcliente);
+        List<DetalleVenta> ventas = ConvertirDataTableAListaDetalleVenta(ventasdatatable);
 
-        [ValidarSession]
+        var ventasViewModel = ventas
+            .Select(v => new VentasViewModel
+            {
+                NroPedido = v.Ventas.NroPedido,
+                Id_Transaccion = v.Ventas.Id_Transaccion,
+                Imagen = v.Productos.Imagen != null ? Convert.ToBase64String(v.Productos.Imagen) : null,
+                ExtImagen = v.Productos.ExtImagen,
+                Nombre = v.Productos.Nombre,
+                Precio = v.Productos.Precio,
+                Cantidad = v.Cantidad,
+                Total = v.Total
+            })
+            .GroupBy(v => v.NroPedido) // Agrupa por número de pedido
+            .Select(g => new PaginatedVentas
+            {
+                NroPedido = g.Key,
+                Id_Transaccion = g.First().Id_Transaccion,
+                Productos = g.ToList()
+            })
+            .ToList();
+
+        return View(ventasViewModel.ToPagedList(pageNumber, pageSize));
+    }
+
+
+
+    [ValidarSession]
         [Authorize]
         public async Task<ActionResult> PagoEfectuado()
         {
-            string paymentId = Request.QueryString["payment_id"]; 
-            string statusString = Request.QueryString["status"]; 
+            string paymentId = Request.QueryString["payment_id"];
+            string statusString = Request.QueryString["status"];
 
             bool status = false;
 
@@ -634,28 +702,25 @@ namespace CapaPresentacionTienda.Controllers
             }
             else
             {
-                // Si es un valor no esperado
                 ViewData["MensajeError"] = "El estado del pago no es válido.";
             }
 
             string Mensaje = string.Empty;
 
-  
             ViewData["Status"] = status;
 
             if (status)
             {
-                Ventas vt = (Ventas)Session["Venta"];
-                DataTable detalle_venta = (DataTable)Session["DetalleVenta"];
+                Ventas vt = ((Ventas)Session["Venta"]);
+                DataTable dt = ((DataTable)Session["DetalleVenta"]);
 
-         
+                string correo = ((Usuario)Session["Cliente"]).Correo;
+
                 vt.Id_Transaccion = paymentId;
 
-                string correo =  ((Usuario)Session["Cliente"]).Correo;
+                int respuesta = new BLL_Venta().Registrar(vt, dt,correo, out Mensaje);
 
-                int respuesta = new BLL_Venta().Registrar(vt, detalle_venta,correo, out Mensaje);
-
-                if (respuesta > 0)
+                if(respuesta > 0)
                 {
                     ViewData["Id_Transaccion"] = vt.Id_Transaccion;
                 }
@@ -663,19 +728,25 @@ namespace CapaPresentacionTienda.Controllers
                 {
                     ViewData["MensajeError"] = "Hubo un problema al registrar la venta. Intenta nuevamente.";
                 }
-            }
-            // Si la transacción está fallida, mostramos un mensaje en la vista
-            if (string.IsNullOrEmpty(ViewData["Id_Transaccion"].ToString()) && string.IsNullOrEmpty(ViewData["MensajeError"]?.ToString()))
-            {
-                ViewData["MensajeError"] = "Hubo un error en el proceso de pago. Por favor, contacta con el soporte.";
-            }
 
-            return View();
+                if (string.IsNullOrEmpty(ViewData["Id_Transaccion"]?.ToString()) && string.IsNullOrEmpty(ViewData["MensajeError"]?.ToString()))
+                {
+                    ViewData["MensajeError"] = "Hubo un error en el proceso de pago. Por favor, contacta con el soporte.";
+                }
+
+                return View();
+            }
+            else
+            {
+                ViewData["MensajeError"] = "El pago no ha sido aprobado.";
+                return View();
+            }
         }
+
 
         public async Task<string> CrearPreferencias()
         {
-            string accessToken = "TEST-1611848299444913-021119-560741862cb0358a61684448b012a110-1048802911"; 
+            string accessToken = "APP_USR-1611848299444913-021119-ad9462fd68104d7c968d89690dd406b9-1048802911"; 
 
             var detalle_venta = (DataTable)Session["DetalleVenta"];
             var items = new List<object>();
@@ -700,9 +771,9 @@ namespace CapaPresentacionTienda.Controllers
                 items = items,
                 back_urls = new
                 {
-                    success = $"https://localhost:44384/Tienda/PagoEfectuado?", 
-                    failure = $"https://localhost:44384/Tienda/PagoEfectuado?",
-                    pending = $"https://localhost:44384/Tienda/PagoEfectuado?"
+                    success = $"https://costaazul-d4bxcsfxe4fha5cv.brazilsouth-01.azurewebsites.net/Tienda/PagoEfectuado?", 
+                    failure = $"https://costaazul-d4bxcsfxe4fha5cv.brazilsouth-01.azurewebsites.net/Tienda/PagoEfectuado?",
+                    pending = $"https://costaazul-d4bxcsfxe4fha5cv.brazilsouth-01.azurewebsites.net/Tienda/PagoEfectuado?"
                 },
                 auto_return = "approved" 
             };
