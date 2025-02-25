@@ -3,6 +3,7 @@ using Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Security.Permissions;
@@ -18,6 +19,11 @@ namespace CapaNegocio.BLL
         public DataTable GetAllProductos()
         {
             return obj.ListarProductos();
+        }
+
+        public DataTable BuscarProductos(string texto)
+        {
+            return obj.BuscarProductos(texto);
         }
 
         public int RegistrarProducto(Productos pr, out string Mensaje)

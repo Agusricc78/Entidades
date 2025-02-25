@@ -144,7 +144,7 @@ namespace CapaPresentacionTienda.Controllers
 
 
         [HttpPost]
-        public JsonResult getProductos(int Id_Categoria, int Id_Linea, int Id_Catalogo, int Elecrico)
+        public JsonResult getProductos(int Id_Categoria, int Id_Linea, int Id_Catalogo, string Elecrico, string nombreProducto, int page = 1, int pageSize = 6)
         {
             var productosDatatable = new BLL_Producto().GetAllProductos();
             List<Productos> productos = ConvertirDataTableALista(productosDatatable);
@@ -153,8 +153,17 @@ namespace CapaPresentacionTienda.Controllers
                 .Where(P => P.Id_Categoria == (Id_Categoria == 0 ? P.Id_Categoria : Id_Categoria) &&
                             P.Id_Linea == (Id_Linea == 0 ? P.Id_Linea : Id_Linea) &&
                             P.Id_Catalogo == (Id_Catalogo == 0 ? P.Id_Catalogo : Id_Catalogo) &&
-                            P.Electrico == (Elecrico == 0 ? P.Electrico : Elecrico) &&
+                            (string.IsNullOrEmpty(Elecrico) || P.Electrico.ToLower().Contains(Elecrico.ToLower())) &&
+                            (string.IsNullOrEmpty(nombreProducto) || P.Nombre.ToLower().Contains(nombreProducto.ToLower())) &&
                             P.Activo)
+                .ToList();
+
+
+            var totalProducts = productosFiltrados.Count();
+
+            var productosPaginados = productosFiltrados
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(P => new
                 {
                     P.Id_Producto,
@@ -166,17 +175,42 @@ namespace CapaPresentacionTienda.Controllers
                     P.Id_Catalogo,
                     P.stock,
                     P.Precio,
-                    Imagen = P.Imagen != null ? Convert.ToBase64String(P.Imagen) : null,  // Convertir aquí
+                    Imagen = P.Imagen != null ? Convert.ToBase64String(P.Imagen) : null,  // Convertir imagen a base64
                     P.ExtImagen,
                     P.Activo,
                     P.Electrico
                 })
                 .ToList();
 
-            var jsonresult = Json(new { data = productosFiltrados }, JsonRequestBehavior.AllowGet);
+
+            var jsonresult = Json(new { data = productosPaginados, totalProducts = totalProducts }, JsonRequestBehavior.AllowGet);
             jsonresult.MaxJsonLength = int.MaxValue;
 
             return jsonresult;
+        }
+
+        [HttpPost]
+
+        public JsonResult BuscarProductos(string texto)
+        {
+            var Productos = new BLL_Producto().BuscarProductos(texto);
+
+            List<Productos> productos = ConvertirDataTableDropdown(Productos);
+
+            texto = texto.Trim().ToLower();
+
+            var productosFiltrado = productos.Where(p => p.Nombre.ToLower().Contains(texto))
+                .Select(p => new
+                {
+                    p.Id_Producto,
+                    p.Nombre,
+                    p.Descripcion,
+                    Imagen = p.Imagen != null ? Convert.ToBase64String(p.Imagen) : null,  // Convertir aquí
+                    p.ExtImagen,
+                    p.Precio
+                }).ToList();
+
+            return Json(new {data = productosFiltrado, JsonRequestBehavior.AllowGet});
         }
 
         public void SetTokenInCookie(string token)
@@ -248,7 +282,49 @@ namespace CapaPresentacionTienda.Controllers
                     Imagen = imagenData,
                     ExtImagen = ExtImangen,
                     Activo = Convert.ToBoolean(row["Activo"].ToString()),
-                    Electrico = Convert.ToInt32(row["Electrico"].ToString())
+                    Electrico = row["Electrico"].ToString()
+                });
+            }
+            return producto;
+        }
+
+
+        private List<Productos> ConvertirDataTableDropdown(DataTable dt)
+        {
+            List<Productos> producto = new List<Productos>();
+            foreach (DataRow row in dt.Rows)
+            {
+                byte[] imagenData = null;
+                string ExtImangen = null;
+
+                // Si la columna Imagen tiene datos binarios (byte[]), asignarlos
+                if (row["Imagen"] != DBNull.Value && row["Imagen"] is byte[])
+                {
+                    imagenData = (byte[])row["Imagen"];
+                    ExtImangen = row["ExtImagen"].ToString();
+
+                }
+                // Si la columna Imagen tiene un nombre de archivo y la columna ExtImagen tiene la extensión
+                else if (row["Imagen"] != DBNull.Value && row["ExtImagen"] != DBNull.Value)
+                {
+                    string imagenArchivo = row["Imagen"].ToString();  // Nombre del archivo
+                    string extImagen = row["ExtImagen"].ToString();  // Extensión de la imagen
+
+                    if (!string.IsNullOrEmpty(imagenArchivo) && !string.IsNullOrEmpty(extImagen))
+                    {
+                        // Construir la URL completa para la imagen
+                        ExtImangen = extImagen;
+                    }
+                }
+
+                producto.Add(new Productos
+                {
+                    Id_Producto = Convert.ToInt32(row["Id_Producto"].ToString()),
+                    Nombre = row["Nombre"].ToString(),
+                    Descripcion = row["Descripcion"].ToString(),
+                    Precio = Convert.ToDecimal(row["Precio"].ToString()),
+                    Imagen = imagenData,
+                    ExtImagen = ExtImangen
                 });
             }
             return producto;

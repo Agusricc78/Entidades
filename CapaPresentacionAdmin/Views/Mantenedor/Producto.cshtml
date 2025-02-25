@@ -32,7 +32,7 @@
                         <th>Linea</th>
                         <th>Precio</th>
                         <th>Stock</th>
-                        <th>Electico</th>
+                        <th>Tipo</th>
                         <th>Activo</th>
                         <th></th>
                     </tr>
@@ -114,10 +114,11 @@
                             <input type="text" name="stock" class="form-control" id="txtStock" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">MateriaSles Electricos</label>
+                            <label class="form-label">Tipo</label>
                             <select id="cboElecticos" class="form-select">
-                                <option value="3">Si</option>
-                                <option value="0">No</option>
+                                <option value="Materiales Electricos">Materiales Electricos</option>
+                                <option value="Varios">Varios</option>
+                                <option value="Iluminacion">Iluminacion</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -129,12 +130,7 @@
                         </div>
 
                     </div>
-
                 </form>
-
-
-
-   
                 <div class="row mt-2">
                     <div class="col-12">
                         <div id="mensajeError" class="alert alert-danger" role="alert">
@@ -156,7 +152,7 @@
         var filaselccionada;
 
 
-          tabladata = $("#tabla").DataTable({
+      tabladata = $("#tabla").DataTable({
       responsive: true,
       ordering: false,
       "ajax": {
@@ -172,15 +168,7 @@
           { "data": "Linea" },
           { "data": "Precio" },
           { "data": "Stock" },
-          {
-              "data": "Electrico", "render": function (valor) {
-                  if (valor) {
-                      return '<span class="badge bg-success">Si</span>'
-                  } else {
-                      return '<span class="badge bg-danger">NO</span>'
-                  }
-              }
-          },
+          { "data": "Electrico" },
           {
               "data": "Activo", "render": function (valor) {
                   if (valor) {
@@ -318,7 +306,7 @@
             $("#cboLinea").val(0);
             $("#txtPrecio").val("");
             $("#txtStock").val("");
-            $("#cboElecticos").val(0);
+            $("#cboElecticos").val();
             $("#cboCatalogo").val(3);
             $("#txtArchivoOriginal").val(""); // Vaciar el campo oculto
 
@@ -401,10 +389,8 @@
             if (!$("#contenedor").valid()) {
                 return;
             }
-
-
                 var formData = new FormData();
-
+            
                 formData.append("Activo", $("#cboActivo").val() == 1 ? true : false);
                 formData.append("Cod_Producto", $("#txtCodigo").val());
                 formData.append("Id_Producto", $("#txtId").val());
@@ -415,10 +401,10 @@
                 formData.append("Id_Linea", $("#cboLinea option:selected").val());
                 formData.append("Precio",$("#txtPrecio").val());
                 formData.append("Stock", $("#txtStock").val());
-                formData.append("Electrico", $("#cboElectrico option:selected").val());
+                formData.append("Electrico", $("#cboElecticos option:selected").val());
+
 
             var archivoImagen = $("#fileProducto")[0].files[0];
-                    debugger;
                     if (archivoImagen) {
                         formData.append("fileProducto", archivoImagen);
                     } else {

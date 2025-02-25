@@ -12,7 +12,13 @@
             <p class="lead fw-normal text-white-50 mb-0">Casa de Materiales Electricos e Iluminacion</p>
         </div>
     </div>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <button type="button" class="btn btn-outline-secondary btn-lg text-white" id="btnMateriaelectrico">Materiales Electricos</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg text-white" id="btnIluminacion">Iluminación</button>
+        <button type="button" class="btn btn-outline-secondary btn-lg text-white" id="btnVarios">Varios</button>
+    </div>
 </header>
+
 <!-- Section-->
 <section>
     <div class="container-fluid px-5 my-5">
@@ -58,22 +64,34 @@
                             </div>
                             <div id="contenedor_electricos" class="card-body">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="electricos" value="0" id="cx01" checked="checked">
+                                    <input class="form-check-input" type="radio" name="electricos" value="" id="cx01" checked="checked">
                                     <label class="form-check-label" for="cx01">
                                         Todos
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="electricos" value="3" id="cx3">
+                                    <input class="form-check-input" type="radio" name="electricos" value="Materiales Electricos" id="cx3">
                                     <label class="form-check-label" for="cx3">
                                         Electricos
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="electricos" value="Iluminacion" id="cx4">
+                                    <label class="form-check-label" for="cx3">
+                                        Iluminacion
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="electricos" value="Varios" id="cx5">
+                                    <label class="form-check-label" for="cx3">
+                                        Varios
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row mb-3">
+                @*<div class="row mb-3">
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-header bg-dark text-white">
@@ -84,8 +102,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row mb-3">
+                </div>*@
+                @*<div class="row mb-3">
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-header bg-dark text-white">
@@ -96,14 +114,14 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>*@
 
 
                 <div class="row mb-3">
                     <div class="col-sm-12">
                         <div class="d-grid gap-2">
                             <button id="btnAplicarFiltro" class="btn btn-outline-dark btn-block" type="button">
-                                <i class="fas fa-filter"></i>Aplicar Filtros
+                                <i class="fas fa-filter"></i>Limpiar Filtros
                             </button>
                         </div>
                     </div>
@@ -114,12 +132,23 @@
             <div class="col-sm-9">
                 <div class="mb-3">
                     <h2 class="form-label">Buscar Productos</h2>
-                    <input type="text" id="searchInput" class="form-control" placeholder="Buscar productos...">
+                    <div class="input-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar productos...">
+                        <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="sugerenciasBusqueda" class="list-group mt-2" style="display: none;"></div>
                 </div>
+
 
 
                 <div id="contenedor_producto" class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 
+                </div>
+
+                <div id="pagination-container" class="d-flex justify-content-center mt-4">
+          
                 </div>
             </div>
         </div>
@@ -130,31 +159,86 @@
     <script>
 
         $(document).ready(function () {
-            MostrarCategorias();
+            //MostrarCategorias();
 
-            var productosGuardados = JSON.parse(localStorage.getItem("productos"));
-            console.log(productosGuardados);
-            if (productosGuardados) {
-                // Si existen, cargarlos directamente desde el localStorage
-                MostrarProductos(0, 0, 0, 0);
-            } else {
-                // Si no existen, hacer la solicitud AJAX para obtener los productos
-                MostrarProductos(0, 0, 0, 0);  // Llamamos a MostrarProductos con parámetros por defecto o según sea necesario
-            }
+            $('#searchButton').on('click', function () {
+                var searchText = $('#searchInput').val();
+                console.log("Valor de búsqueda: ", searchText);
+                if (searchText) {
+                    MostrarProductos(0, 0, 0, "", searchText); 
+                }
+            });
 
+            $('#searchInput').on('keypress', function (e) {
+                if (e.which === 13) {  // 13 es la tecla Enter
+                    var searchText = $('#searchInput').val();
+                    if (searchText) {
+                        MostrarProductos(0, 0, 0, "", searchText);  // Llamada AJAX también
+                    }
+                }
+            });
+
+            MostrarProductos(0, 0, 0, "");
+
+
+            $("input[name=categoria], input[name=linea], input[name=catalogos], input[name=electricos]").change(function () {
+                var Id_Catalogo = $("input[name=catalogos]:checked").val();
+                var Electrico = $("input[name=electricos]:checked").val();
+
+                MostrarProductos(0, 0, Id_Catalogo, Electrico);
+            });
 
             $("#searchInput").on("keyup", function () {
-                let filtro = $(this).val().toLowerCase();
+                let query = $(this).val().trim();
 
-                $("#contenedor_producto .card").each(function () {
-                    let textoProducto = $(this).text().toLowerCase();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: '@Url.Action("BuscarProductos", "Tienda")',
+                        type: "POST",
+                        data: JSON.stringify({ texto: query }),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (response) {
+                            $("#sugerenciasBusqueda").empty().show();
 
-                    if (textoProducto.includes(filtro)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
+                            if (response.data.length > 0) {
+                                $.each(response.data, function (i, producto) {
+                                    let imagen = producto.Imagen ? "data:image/" + producto.ExtImagen + ";base64," + producto.Imagen : "URL_DE_IMAGEN_POR_DEFECTO";
+                                    let sugerencia = $("<a>").addClass("list-group-item list-group-item-action")
+                                        .attr("href", '@Url.Action("DetalleProducto", "Tienda")?Id_Producto=' + producto.Id_Producto)  // Establecer el href aquí
+                                        .data("idProducto", producto.Id_Producto)
+                                        .append(
+                                            $("<div>").addClass("d-flex align-items-center").append(
+                                                $("<img>").addClass("me-2 img-thumbnail")
+                                                    .attr("src", imagen)
+                                                    .css({ "width": "40px", "height": "40px", "object-fit": "cover" }),
+                                                $("<div>").append(
+                                                    $("<h6>").text(producto.Nombre),
+                                                    $("<p>").addClass("text-muted").text(producto.Descripcion),
+                                                    $("<p>").addClass("text-success").text("$" + producto.Precio.toFixed(2))
+                                                )
+                                            )
+                                        );
+
+                                    $("#sugerenciasBusqueda").append(sugerencia);
+                                });
+                            } else {
+                                $("#sugerenciasBusqueda").append($("<a>").addClass("list-group-item").text("No se encontraron productos"));
+                            }
+                        },
+                        error: function () {
+                            //alert("Error al buscar productos.");
+                        }
+                    });
+                } else {
+                    $("#sugerenciasBusqueda").empty().hide();
+                }
+            });
+
+            $(document).on("click", function (e) {
+                if (!$(e.target).closest('#searchInput').length && !$(e.target).closest('#sugerenciasBusqueda').length) {
+                    $("#sugerenciasBusqueda").empty().hide();
+                }
             });
         });
 
@@ -248,11 +332,14 @@
           });
         }
 
-          function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico) {
+        function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico, page = 1) {
+            var nombreProducto = $("#searchInput").val();  // Correcto
+            var pageSize = 12; 
+
         jQuery.ajax({
             url: '@Url.Action("getProductos", "Tienda")',
             type: "POST",
-            data: JSON.stringify({ Id_Categoria: Id_Categoria, Id_Linea: Id_Linea, Id_Catalogo: Id_Catalogo, Elecrico: Elecrico }),
+            data: JSON.stringify({ Id_Categoria: Id_Categoria, Id_Linea: Id_Linea, Id_Catalogo: Id_Catalogo, Elecrico: Elecrico, nombreProducto: nombreProducto, page: page, pageSize: pageSize }),
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (response) {
@@ -266,7 +353,7 @@
                     let cardFooter = $("<div>").addClass("card-footer pt-0 border-top-0 bg-transparent");
 
                     ExisteProductoEnCarrito(element.Id_Producto, function (enCarrito, cantidad) {
-  
+
                      cardFooter.empty();
 
                     if (element.stock > 0) {
@@ -281,9 +368,9 @@
 
                                 $("<input>").addClass("form-control input-cantidad text-center rounded-0")
                                     .prop("disabled", true)
-                                    .attr("id", "cantidad_" + element.Id_Producto) 
-                                    .attr("name", "cantidad_" + element.Id_Producto) 
-                                    .css({ "width": "50px" }) 
+                                    .attr("id", "cantidad_" + element.Id_Producto)
+                                    .attr("name", "cantidad_" + element.Id_Producto)
+                                    .css({ "width": "50px" })
                                     .data("producto", element)
                                     .val(cantidad),
 
@@ -318,7 +405,8 @@
 
                     let productCard = $("<div>").addClass("col-12 col-md-6 mb-5").append(
                         $("<div>").addClass("card h-100").append(
-                            $("<img>").addClass("card-img-top")
+                            $("<img>").addClass("card-img-top img-fluid")
+                                .css("width", "100%")
                                 .attr("src", element.Imagen ? "data:image/" + element.ExtImagen + ";base64," + element.Imagen : "URL_DE_IMAGEN_POR_DEFECTO"),
                             $("<div>").addClass("card-body p-4").append(
                                 $("<div>").addClass("text-center").append(
@@ -337,12 +425,74 @@
 
                     ExisteProductoEnCarrito(idProducto);
                 });
+
+                mostrarPaginacion(response.totalProducts, page, pageSize);
             },
             beforeSend: function () {
                 $("#contenedor_producto").LoadingOverlay("show");
             }
         });
         }
+
+
+        function mostrarPaginacion(totalProducts, currentPage, pageSize) {
+            var totalPages = Math.ceil(totalProducts / pageSize);  // Calcular el total de páginas
+            var paginationContainer = $("#pagination-container");  // Asume que tienes un contenedor con este id para los botones
+
+            paginationContainer.html("");  // Limpiar contenedor de paginación
+
+            if (totalPages > 1) {
+                // Contenedor para los elementos de paginación (centrado)
+                var paginationList = $("<ul>").addClass("pagination d-flex justify-content-center");
+
+                // Anterior
+                var previousPage = $("<li>").addClass("page-item")
+                    .addClass(currentPage === 1 ? "disabled" : "")
+                    .append($("<a>").addClass("page-link btn-outline-dark")
+                        .attr("href", currentPage > 1 ? "#" : "#")
+                        .text("Anterior")
+                        .on("click", function () {
+                            if (currentPage > 1) {
+                                MostrarProductos(0, 0, 0, "", currentPage - 1, 12);
+                            }
+                        }));
+
+                paginationList.append(previousPage);
+
+                // Páginas
+                for (var i = 1; i <= totalPages; i++) {
+                    var pageItem = $("<li>").addClass("page-item")
+                        .addClass(currentPage === i ? "active" : "")
+                        .append($("<a>").addClass("page-link")
+                            .attr("href", "#")
+                            .text(i)
+                            .on("click", function () {
+                                var selectedPage = parseInt($(this).text());
+                                MostrarProductos(0, 0, 0, "", selectedPage, 12);
+                            }));
+
+                    paginationList.append(pageItem);
+                }
+
+                // Siguiente
+                var nextPage = $("<li>").addClass("page-item")
+                    .addClass(currentPage === totalPages ? "disabled" : "")
+                    .append($("<a>").addClass("page-link btn-outline-dark")
+                        .attr("href", currentPage < totalPages ? "#" : "#")
+                        .text("Siguiente")
+                        .on("click", function () {
+                            if (currentPage < totalPages) {
+                                MostrarProductos(0, 0, 0, "", currentPage + 1, 12);
+                            }
+                        }));
+
+                paginationList.append(nextPage);
+
+                // Añadir la lista de paginación al contenedor
+                paginationContainer.append(paginationList);
+            }
+        }
+
 
 
 
@@ -429,12 +579,19 @@
        })
 
         $("#btnAplicarFiltro").click(function () {
-            var Id_Categoria = $("input[name=categoria]:checked").val();
-            var Id_Linea = $("input[name=linea]:checked").val();
-            var Id_Catalogo = $("input[name=catalogos]:checked").val();
-            var Electrico = $("input[name=electricos]:checked").val();
 
-            MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Electrico);
+            MostrarProductos(0, 0, 0, "");
+        })
+
+
+        $("#btnMateriaelectrico").click(function () {
+
+            MostrarProductos(0, 0, 0, "Materiales Electricos");
+        })
+
+        $("#btnIluminacion").click(function () {
+
+            MostrarProductos(0, 0, 0, "Iluminacion");
         })
 
         $(document).on("change","input[name=categoria]", function () {
@@ -456,7 +613,7 @@
 
                 if (data.respuesta > 0) {
                     MostrarCantidadCarrito();
-                    MostrarProductos(0, 0, 0, 0);
+                    MostrarProductos(0, 0, 0, "");
                 } else {
 
                     swal("", data.mensaje, "warning");
@@ -468,5 +625,5 @@
         });
 
     </script>
-    
-    }
+
+}

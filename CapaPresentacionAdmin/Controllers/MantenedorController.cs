@@ -182,7 +182,9 @@ namespace CapaPresentacionAdmin.Controllers
                 ExtImagen = row["ExtImagen"] != DBNull.Value ? row["ExtImagen"].ToString() : ""
             }).ToList();
 
-            return Json(new { data = Productos }, JsonRequestBehavior.AllowGet);
+            var jsonResult = Json(new { data = Productos }, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
         }
 
         [HttpPost]

@@ -55,6 +55,16 @@ namespace CapaDatos.Mappers
             return cn.Leer("ListarProductos");
         }
 
+        public DataTable BuscarProductos(string texto)
+        {
+            SqlParameter[] sp = new SqlParameter[]
+            {
+                new SqlParameter("@texto",texto)
+            };
+
+            return cn.Leer("BuscarProductos", sp);
+        }
+
         public int EliminarProducto(int id, out string Mensaje)
         {
             Mensaje = string.Empty; // Inicializamos por si no se asigna valor.
