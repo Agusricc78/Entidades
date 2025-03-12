@@ -189,8 +189,8 @@ namespace CapaPresentacionTienda.Controllers
             return jsonresult;
         }
 
-        [HttpPost]
 
+        [HttpPost]
         public JsonResult BuscarProductos(string texto)
         {
             var Productos = new BLL_Producto().BuscarProductos(texto);
@@ -210,8 +210,12 @@ namespace CapaPresentacionTienda.Controllers
                     p.Precio
                 }).ToList();
 
-            return Json(new {data = productosFiltrado, JsonRequestBehavior.AllowGet});
+            var jsonresult =  Json(new { data = productosFiltrado, JsonRequestBehavior.AllowGet });
+            jsonresult.MaxJsonLength = int.MaxValue;
+
+            return jsonresult;
         }
+
 
         public void SetTokenInCookie(string token)
         {

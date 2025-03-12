@@ -128,7 +128,6 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-
                     </div>
                 </form>
                 <div class="row mt-2">
@@ -251,8 +250,8 @@
         });
 
         jQuery.validator.addMethod("preciodecimal", function (value, element) {
-            return this.optional(element) || /^\d+(\.\d{1,2})?$/.test(value);
-        }, "El formato correcto del precio es 00.00");
+            return this.optional(element) || /^\d+(\,\d{1,2})?$/.test(value);
+        }, "El formato correcto del precio es 00,00");
 
 
         $("#contenedor").validate({
@@ -285,7 +284,7 @@
                 },
                 precio: {
                     required: "- El campo precio es obligatorio",
-                    preciodecimal: "El formato correcto es decimal con '.' no con ',' y dos decimales"
+                    preciodecimal: "El formato correcto es decimal con ',' no con '.' y dos decimales"
                 }
             },
             errorElement: "div",

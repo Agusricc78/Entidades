@@ -22,11 +22,9 @@ namespace Entities
         public byte[] Imagen { get; set; }
         public string ExtImagen { get; set; }
         public int stock { get; set; }
-
         public int? cant {  get; set; }
         public int Id_Catalogo { get; set; }  
-        
         public string Nombre {  get; set; }
-
     }
 }
+

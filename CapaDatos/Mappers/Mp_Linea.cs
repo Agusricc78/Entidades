@@ -101,8 +101,7 @@ namespace CapaDatos.Mappers
 
             cn.Escribir("EliminarLinea", sp);
 
-            // Obtener los valores de los parámetros de salida
-            Mensaje = parametroMensaje.Value?.ToString(); // Evitar `null`
+            Mensaje = parametroMensaje.Value?.ToString();
             return (parametroResultado.Value != DBNull.Value) ? Convert.ToInt32(parametroResultado.Value) : 0;
         }
 

@@ -74,7 +74,7 @@ namespace CapaDatos.Mappers
                 Direction = ParameterDirection.Output
             };
 
-            SqlParameter parametroResultado = new SqlParameter("@Resultado", SqlDbType.Int)
+            SqlParameter parametroResultado = new SqlParameter("@Resultado", SqlDbType.Bit)
             {
                 Direction = ParameterDirection.Output
             };
@@ -90,7 +90,8 @@ namespace CapaDatos.Mappers
             cn.Escribir("ElimnarProducto", parametros);
             // Obtener los valores de los parámetros de salida
             Mensaje = parametroMensaje.Value?.ToString(); // Evitar `null`
-            return (parametroResultado.Value != DBNull.Value) ? Convert.ToInt32(parametroResultado.Value) : 0;
+            return parametroResultado.Value != DBNull.Value && (bool)parametroResultado.Value ? 1 : 0;  // Manejo para bit (true/false)
+        
         }
 
 

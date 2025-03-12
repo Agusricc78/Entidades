@@ -30,29 +30,29 @@
                             <div class="card-header bg-dark text-white">
                                 Catalogos
                             </div>
-                            <div id="contenedor_catalogo" class="card-body">
-                                <div id="contenedor_Linea" class="card-body">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="catalogos" value="0" id="cx0" checked="checked">
-                                        <label class="form-check-label" for="cx0">
-                                            Todos
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="catalogos" value="1" id="cx1">
-                                        <label class="form-check-label" for="cx1">
-                                            Ferrolux
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="catalogos" value="2" id="cx2">
-                                        <label class="form-check-label" for="cx2">
-                                            Rustica
-                                        </label>
-                                    </div>
+                                <div id="contenedor_catalogo" class="card-body">
+                                    <div id="contenedor_Linea" class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="catalogos" value="0" id="cx0" checked="checked">
+                                            <label class="form-check-label" for="cx0">
+                                                Todos
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="catalogos" value="1" id="cx1">
+                                            <label class="form-check-label" for="cx1">
+                                                Ferrolux
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="catalogos" value="2" id="cx2">
+                                            <label class="form-check-label" for="cx2">
+                                                Rustica
+                                            </label>
+                                        </div>
 
+                                    </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
-                    <div id="sugerenciasBusqueda" class="list-group mt-2" style="display: none;"></div>
+                    <div id="sugerenciasBusqueda" class="list-group mt-2" style="display: none;max-height:300px; overflow-y:auto;"></div>
                 </div>
 
 
@@ -158,82 +158,93 @@
 @section scripts{
     <script>
 
+        var Id_Catalogo_Global = 0;
+        var Electrico_Global = "";
+        var nombreProducto = ""
+
         $(document).ready(function () {
             //MostrarCategorias();
 
             $('#searchButton').on('click', function () {
-                var searchText = $('#searchInput').val();
-                console.log("Valor de búsqueda: ", searchText);
-                if (searchText) {
-                    MostrarProductos(0, 0, 0, "", searchText); 
+                var nombreProducto = $('#searchInput').val();
+                console.log("Valor de búsqueda: ", nombreProducto);
+                if (nombreProducto) {
+                    MostrarProductos(0, 0, Id_Catalogo_Global, Electrico_Global, nombreProducto, 1, 12);
                 }
             });
 
             $('#searchInput').on('keypress', function (e) {
                 if (e.which === 13) {  // 13 es la tecla Enter
-                    var searchText = $('#searchInput').val();
-                    if (searchText) {
-                        MostrarProductos(0, 0, 0, "", searchText);  // Llamada AJAX también
+                    var nombreProducto = $('#searchInput').val();
+                    if (nombreProducto) {
+                        MostrarProductos(0, 0, Id_Catalogo_Global, Electrico_Global, nombreProducto, 1, 12);
                     }
                 }
             });
 
-            MostrarProductos(0, 0, 0, "");
+            MostrarProductos(0, 0, 0, "","",1,12);
 
 
             $("input[name=categoria], input[name=linea], input[name=catalogos], input[name=electricos]").change(function () {
-                var Id_Catalogo = $("input[name=catalogos]:checked").val();
-                var Electrico = $("input[name=electricos]:checked").val();
+                Id_Catalogo_Global = $("input[name=catalogos]:checked").val();
+                Electrico_Global = $("input[name=electricos]:checked").val();
 
-                MostrarProductos(0, 0, Id_Catalogo, Electrico);
+                MostrarProductos(0, 0, Id_Catalogo_Global, Electrico_Global,nombreProducto,1,12);
             });
+
+            let timeout;
 
             $("#searchInput").on("keyup", function () {
-                let query = $(this).val().trim();
+                    clearTimeout(timeout); // Limpiar el timeout anterior
 
-                if (query.length > 0) {
-                    $.ajax({
-                        url: '@Url.Action("BuscarProductos", "Tienda")',
-                        type: "POST",
-                        data: JSON.stringify({ texto: query }),
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function (response) {
-                            $("#sugerenciasBusqueda").empty().show();
+                    let query = $(this).val().trim();
 
-                            if (response.data.length > 0) {
-                                $.each(response.data, function (i, producto) {
-                                    let imagen = producto.Imagen ? "data:image/" + producto.ExtImagen + ";base64," + producto.Imagen : "URL_DE_IMAGEN_POR_DEFECTO";
-                                    let sugerencia = $("<a>").addClass("list-group-item list-group-item-action")
-                                        .attr("href", '@Url.Action("DetalleProducto", "Tienda")?Id_Producto=' + producto.Id_Producto)  // Establecer el href aquí
-                                        .data("idProducto", producto.Id_Producto)
-                                        .append(
-                                            $("<div>").addClass("d-flex align-items-center").append(
-                                                $("<img>").addClass("me-2 img-thumbnail")
-                                                    .attr("src", imagen)
-                                                    .css({ "width": "40px", "height": "40px", "object-fit": "cover" }),
-                                                $("<div>").append(
-                                                    $("<h6>").text(producto.Nombre),
-                                                    $("<p>").addClass("text-muted").text(producto.Descripcion),
-                                                    $("<p>").addClass("text-success").text("$" + producto.Precio.toFixed(2))
-                                                )
-                                            )
-                                        );
+                    // Establecer un retraso de 500ms antes de realizar la búsqueda
+                    timeout = setTimeout(function () {
+                       if (query.length > 0) {
+                               $.ajax({
+                                   url: '@Url.Action("BuscarProductos", "Tienda")',
+                                   type: "POST",
+                                   data: JSON.stringify({ texto: query }),
+                                   dataType: "json",
+                                   contentType: "application/json; charset=utf-8",
+                                   success: function (response) {
+                                       $("#sugerenciasBusqueda").empty().show();
 
-                                    $("#sugerenciasBusqueda").append(sugerencia);
-                                });
-                            } else {
-                                $("#sugerenciasBusqueda").append($("<a>").addClass("list-group-item").text("No se encontraron productos"));
-                            }
-                        },
-                        error: function () {
-                            //alert("Error al buscar productos.");
-                        }
-                    });
-                } else {
-                    $("#sugerenciasBusqueda").empty().hide();
-                }
-            });
+                                       if (response.data.length > 0) {
+                                           $.each(response.data, function (i, producto) {
+                                               let imagen = producto.Imagen ? "data:image/" + producto.ExtImagen + ";base64," + producto.Imagen : "URL_DE_IMAGEN_POR_DEFECTO";
+                                               let sugerencia = $("<a>").addClass("list-group-item list-group-item-action")
+                                                   .attr("href", '@Url.Action("DetalleProducto", "Tienda")?Id_Producto=' + producto.Id_Producto)  // Establecer el href aquí
+                                                   .data("idProducto", producto.Id_Producto)
+                                                   .append(
+                                                       $("<div>").addClass("d-flex align-items-center").append(
+                                                           $("<img>").addClass("me-2 img-thumbnail")
+                                                               .attr("src", imagen)
+                                                               .css({ "width": "40px", "height": "40px", "object-fit": "cover" }),
+                                                           $("<div>").append(
+                                                               $("<h6>").text(producto.Nombre),
+                                                               $("<p>").addClass("text-muted").text(producto.Descripcion),
+                                                               $("<p>").addClass("text-success").text("$" + producto.Precio.toFixed(2))
+                                                           )
+                                                       )
+                                                   );
+
+                                               $("#sugerenciasBusqueda").append(sugerencia);
+                                           });
+                                       } else {
+                                           $("#sugerenciasBusqueda").append($("<a>").addClass("list-group-item").text("No se encontraron productos"));
+                                       }
+                                   },
+                                   error: function () {
+                                       //alert("Error al buscar productos.");
+                                   }
+                               });
+                           } else {
+                               $("#sugerenciasBusqueda").empty().hide();
+                           }
+                    }, 500); // Retraso de 500 milisegundos (puedes ajustar este valor)
+                });
 
             $(document).on("click", function (e) {
                 if (!$(e.target).closest('#searchInput').length && !$(e.target).closest('#sugerenciasBusqueda').length) {
@@ -332,9 +343,9 @@
           });
         }
 
-        function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico, page = 1) {
+        function MostrarProductos(Id_Categoria, Id_Linea, Id_Catalogo, Elecrico, nombreProducto , page = 1) {
             var nombreProducto = $("#searchInput").val();  // Correcto
-            var pageSize = 12; 
+            var pageSize = 12;
 
         jQuery.ajax({
             url: '@Url.Action("getProductos", "Tienda")',
@@ -436,162 +447,176 @@
 
 
         function mostrarPaginacion(totalProducts, currentPage, pageSize) {
-            var totalPages = Math.ceil(totalProducts / pageSize);  // Calcular el total de páginas
-            var paginationContainer = $("#pagination-container");  // Asume que tienes un contenedor con este id para los botones
+            var totalPages = Math.ceil(totalProducts / pageSize);
+            var paginationContainer = $("#pagination-container");
 
-            paginationContainer.html("");  // Limpiar contenedor de paginación
+            paginationContainer.html(""); // Limpiar contenedor de paginación
 
             if (totalPages > 1) {
-                // Contenedor para los elementos de paginación (centrado)
-                var paginationList = $("<ul>").addClass("pagination d-flex justify-content-center");
+                var paginationList = $("<ul>").addClass("pagination d-flex justify-content-center flex-wrap");
 
-                // Anterior
+                // Botón Anterior
                 var previousPage = $("<li>").addClass("page-item")
                     .addClass(currentPage === 1 ? "disabled" : "")
                     .append($("<a>").addClass("page-link btn-outline-dark")
-                        .attr("href", currentPage > 1 ? "#" : "#")
+                        .attr("href", "#")
                         .text("Anterior")
                         .on("click", function () {
                             if (currentPage > 1) {
-                                MostrarProductos(0, 0, 0, "", currentPage - 1, 12);
+                                MostrarProductos(0, 0, Id_Catalogo_Global, Electrico_Global, nombreProducto ,currentPage - 1, 12);  // Pasar los filtros
                             }
                         }));
 
                 paginationList.append(previousPage);
 
-                // Páginas
-                for (var i = 1; i <= totalPages; i++) {
-                    var pageItem = $("<li>").addClass("page-item")
-                        .addClass(currentPage === i ? "active" : "")
-                        .append($("<a>").addClass("page-link")
-                            .attr("href", "#")
-                            .text(i)
-                            .on("click", function () {
-                                var selectedPage = parseInt($(this).text());
-                                MostrarProductos(0, 0, 0, "", selectedPage, 12);
-                            }));
+                var maxVisiblePages = 4;
+                var startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                var endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
-                    paginationList.append(pageItem);
+                if (startPage > 1) {
+                    paginationList.append(createPageItem(1)); // Primera página
+                    if (startPage > 2) paginationList.append(createEllipsis());
                 }
 
-                // Siguiente
+                for (var i = startPage; i <= endPage; i++) {
+                    paginationList.append(createPageItem(i));
+                }
+
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) paginationList.append(createEllipsis());
+                    paginationList.append(createPageItem(totalPages)); // Última página
+                }
+
+                // Botón Siguiente
                 var nextPage = $("<li>").addClass("page-item")
                     .addClass(currentPage === totalPages ? "disabled" : "")
                     .append($("<a>").addClass("page-link btn-outline-dark")
-                        .attr("href", currentPage < totalPages ? "#" : "#")
+                        .attr("href", "#")
                         .text("Siguiente")
                         .on("click", function () {
                             if (currentPage < totalPages) {
-                                MostrarProductos(0, 0, 0, "", currentPage + 1, 12);
+                                MostrarProductos(0, 0, Id_Catalogo_Global, Electrico_Global, nombreProducto, currentPage + 1, 12);  // Pasar los filtros
                             }
                         }));
 
                 paginationList.append(nextPage);
 
-                // Añadir la lista de paginación al contenedor
                 paginationContainer.append(paginationList);
+            }
+
+            function createPageItem(page) {
+                return $("<li>").addClass("page-item")
+                    .addClass(currentPage === page ? "active" : "")
+                    .append($("<a>").addClass("page-link")
+                        .attr("href", "#")
+                        .text(page)
+                        .on("click", function () {
+                            MostrarProductos(0, 0, Id_Catalogo_Global, Electrico_Global, nombreProducto, page, 12);  // Pasar los filtros
+                        }));
+            }
+
+            function createEllipsis() {
+                return $("<li>").addClass("page-item disabled")
+                    .append($("<a>").addClass("page-link").text("..."));
             }
         }
 
+        $(document).on("click", ".btn-sumar", function(){
+            var div_contenedor = $(this).parent("div.d-flex");
+
+            var input_cantidad = $(div_contenedor).find("input.input-cantidad");
+
+            var btn = $(this)
+            var producto = $(input_cantidad).data("producto")
+
+            var idproducto = parseFloat(producto.Id_Producto) || 0;
+
+            jQuery.ajax({
+                url: '@Url.Action("OperacioCarrito", "Tienda")',
+                type: "POST",
+                data: JSON.stringify({ idproducto: idproducto, sumar: true }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    $(btn).LoadingOverlay("hide")
+
+                    if (data.respuesta) {
+                        var cantidad = parseInt($(input_cantidad).val()) + 1;
+                        $(input_cantidad).val(cantidad)
 
 
+                    } else {
+                        swal("",data.mensaje,"warning")
+                    }
+                },
+                beforeSend: function ()
+                {
+                    $(btn).LoadingOverlay("show")
+                },
+                error: function (error) {
+                    $(btn).LoadingOverlay("hide")
+                }
+            })
+        })
 
-             $(document).on("click", ".btn-sumar", function(){
-                 var div_contenedor = $(this).parent("div.d-flex");
+        $(document).on("click", ".btn-restar", function(){
+        var div_contenedor = $(this).parent("div.d-flex");
 
-                 var input_cantidad = $(div_contenedor).find("input.input-cantidad");
+        var input_cantidad = $(div_contenedor).find("input.input-cantidad");
 
-                 var btn = $(this)
-                 var producto = $(input_cantidad).data("producto")
+        var btn = $(this)
+        var producto = $(input_cantidad).data("producto")
 
-                 var idproducto = parseFloat(producto.Id_Producto) || 0;
+        var idproducto = parseFloat(producto.Id_Producto) || 0;
 
-                 jQuery.ajax({
-                     url: '@Url.Action("OperacioCarrito", "Tienda")',
-                     type: "POST",
-                     data: JSON.stringify({ idproducto: idproducto, sumar: true }),
-                     dataType: "json",
-                     contentType: "application/json; charset=utf-8",
-                     success: function (data) {
+        var cantidad = parseInt($(input_cantidad).val()) - 1;
 
-                         $(btn).LoadingOverlay("hide")
+        if (cantidad >= 1) {
+            jQuery.ajax({
+                url: '@Url.Action("OperacioCarrito", "Tienda")',
+                type: "POST",
+                data: JSON.stringify({ idproducto: idproducto, sumar: false }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
 
-                         if (data.respuesta) {
-                             var cantidad = parseInt($(input_cantidad).val()) + 1;
-                             $(input_cantidad).val(cantidad)
+                    $(btn).LoadingOverlay("hide")
 
+                    if (data.respuesta) {
 
-                         } else {
-                             swal("",data.mensaje,"warning")
-                         }
-                     },
-                     beforeSend: function ()
-                     {
-                         $(btn).LoadingOverlay("show")
-                     },
-                     error: function (error) {
-                         $(btn).LoadingOverlay("hide")
-                     }
-                 })
-             })
-
-           $(document).on("click", ".btn-restar", function(){
-           var div_contenedor = $(this).parent("div.d-flex");
-
-           var input_cantidad = $(div_contenedor).find("input.input-cantidad");
-
-           var btn = $(this)
-           var producto = $(input_cantidad).data("producto")
-
-           var idproducto = parseFloat(producto.Id_Producto) || 0;
-
-           var cantidad = parseInt($(input_cantidad).val()) - 1;
-
-           if (cantidad >= 1) {
-               jQuery.ajax({
-                  url: '@Url.Action("OperacioCarrito", "Tienda")',
-                  type: "POST",
-                  data: JSON.stringify({ idproducto: idproducto, sumar: false }),
-                  dataType: "json",
-                  contentType: "application/json; charset=utf-8",
-                  success: function (data) {
-
-                      $(btn).LoadingOverlay("hide")
-
-                      if (data.respuesta) {
-
-                          $(input_cantidad).val(cantidad)
+                        $(input_cantidad).val(cantidad)
 
 
-                      } else {
-                          swal("",data.mensaje,"warning")
-                      }
-                  },
-                  beforeSend: function ()
-                  {
-                      $(btn).LoadingOverlay("show")
-                  },
-                  error: function (error) {
-                      $(btn).LoadingOverlay("hide")
-                  }
-              })
-           }
-       })
+                    } else {
+                        swal("",data.mensaje,"warning")
+                    }
+                },
+                beforeSend: function ()
+                {
+                    $(btn).LoadingOverlay("show")
+                },
+                error: function (error) {
+                    $(btn).LoadingOverlay("hide")
+                }
+            })
+        }
+    })
 
         $("#btnAplicarFiltro").click(function () {
-
-            MostrarProductos(0, 0, 0, "");
+            nombreProducto = $("#searchInput").val("");
+            MostrarProductos(0, 0, 0, "",nombreProducto,1,12);
         })
 
 
         $("#btnMateriaelectrico").click(function () {
 
-            MostrarProductos(0, 0, 0, "Materiales Electricos");
+            MostrarProductos(0, 0, 0, "Materiales Electricos", nombreProducto);
         })
 
         $("#btnIluminacion").click(function () {
 
-            MostrarProductos(0, 0, 0, "Iluminacion");
+            MostrarProductos(0, 0, 0, "Iluminacion", nombreProducto);
         })
 
         $(document).on("change","input[name=categoria]", function () {
@@ -613,7 +638,7 @@
 
                 if (data.respuesta > 0) {
                     MostrarCantidadCarrito();
-                    MostrarProductos(0, 0, 0, "");
+                    MostrarProductos(0, 0, 0, "","");
                 } else {
 
                     swal("", data.mensaje, "warning");
@@ -623,7 +648,5 @@
             });
 
         });
-
     </script>
-
 }

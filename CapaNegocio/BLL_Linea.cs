@@ -66,9 +66,6 @@ namespace CapaNegocio
         public int EliminarLinea(int id, out string Mensaje)
         {
             Mensaje = string.Empty;
-
-
-
             if (string.IsNullOrEmpty(Convert.ToInt32(id).ToString()) || string.IsNullOrWhiteSpace(Convert.ToInt32(id).ToString()))
             {
                 Mensaje = "El id de la categoria no puede estar vacio";

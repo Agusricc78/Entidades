@@ -57,10 +57,37 @@ namespace CapaPresentacionTienda.Controllers
 
             resultado = new BLL_Login().RegistrarCliente(objeto, out mensaje);
 
-            if(resultado > 0 )
+            if(resultado > 0)
             {
-                ViewBag.Error = null;
-                return RedirectToAction("Index","Acceso");
+                var usuariosDataTable = new BLL_Login().GetAllUsers();
+
+                List<Usuario> usuarios = ConvertirDataTableALista(usuariosDataTable);
+
+                Usuario usu = usuarios.FirstOrDefault(u => u.Correo == objeto.Correo && u.Password == objeto.Password);
+
+                if (usu == null)
+                {
+                    ViewBag.Error = mensaje;
+                    return View(objeto);
+                }
+                else
+                {
+                    if (usu.Restablecer)
+                    {
+                        TempData["Id_Usuario"] = usu.Id_Usuario;
+                        return RedirectToAction("CambiarClave");
+                    }
+                    else
+                    {
+                        FormsAuthentication.SetAuthCookie(usu.Correo, false);
+
+                        Session["Cliente"] = usu;
+
+                        ViewBag.Error = null;
+
+                        return RedirectToAction("Index", "Tienda");
+                    }
+                }
             }
             else
             {
@@ -82,8 +109,8 @@ namespace CapaPresentacionTienda.Controllers
 
             if(usu == null)
             {
-                ViewBag.Error = "Correo o contraseña incorrecta";
-                return View();
+                TempData["Error"] = "Correo o contraseña incorrecta";
+                return RedirectToAction("Index", "Tienda");  
             }
             else
             {

@@ -201,7 +201,7 @@
                     $(".modal-body").LoadingOverlay("hide");
                     
                     if (Categoria.Id_Categoria == 0) {
-                        if (data.resultado != -1) {
+                        if (data.resultado != 0) {
 
                             Categoria.Id_Categoria = data.resultado
                             tabladata.row.add(Categoria).draw(false);

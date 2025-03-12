@@ -179,7 +179,7 @@ namespace CapaPresentacionAdmin.Controllers
                 Electrico = row["Electrico"],
                 Stock = row["Stock"],
                 ImagenBase64 = row["Imagen"] != DBNull.Value ? Convert.ToBase64String((byte[])row["Imagen"]) : null,
-                ExtImagen = row["ExtImagen"] != DBNull.Value ? row["ExtImagen"].ToString() : ""
+                ExtImagen = row["ExtImagen"] != DBNull.Value ? row["ExtImagen"].ToString() : "",
             }).ToList();
 
             var jsonResult = Json(new { data = Productos }, JsonRequestBehavior.AllowGet);
